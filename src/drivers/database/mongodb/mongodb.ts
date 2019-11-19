@@ -1,5 +1,5 @@
 import { MongoClient, Db } from 'mongodb';
-import { OutageReport, OutageReportUpdates } from '../../../../types/outageReport';
+import { OutageReport, OutageReportUpdates } from '../../../types/outageReport';
 
 export class MongoDB {
 

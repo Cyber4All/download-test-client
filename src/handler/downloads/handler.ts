@@ -1,8 +1,8 @@
 import { exec } from 'shelljs';
 import * as fs from 'fs';
 import 'source-map-support/register';
-import { MongoDB } from './drivers/database/mongodb/mongodb';
-import { OutageReportUpdates, OutageReport } from '../types/outageReport';
+import { MongoDB } from '../../drivers/database/mongodb/mongodb';
+import { OutageReportUpdates, OutageReport } from '../../types/outageReport';
 
 const DATABASE_URI = process.env.DATABASE_URI;
 

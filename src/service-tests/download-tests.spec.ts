@@ -1,7 +1,6 @@
-import { generateUserToken } from "./drivers/jwt/tokenManager";
-import { regularUser, reviewerUser, curatorUser, editorUser, adminUser } from "./users";
-
-const request = require("request-promise");
+import * as request from "request-promise";
+import { generateUserToken } from "../drivers/jwt/tokenManager";
+import { regularUser, reviewerUser, curatorUser, editorUser, adminUser } from "../users";
 
 let regToken, reviewerToken, curatorToken, editorToken, adminToken;
 
@@ -30,6 +29,7 @@ describe("When testing downloads", () => {
     describe("and a unauthorized user", () => {
         // Set authorization header to empty since no user is logged in
         options.headers.Authorization = "";
+
         it("should be unable to download unrealeased objects", () => {
             
         });
@@ -53,6 +53,7 @@ describe("When testing downloads", () => {
     });
     describe("and a signed in user with no privileges", () => {
         options.headers.Authorization = regToken;
+
         it("should be unable to download unreleased objects", () => {
 
         });
@@ -83,6 +84,7 @@ describe("When testing downloads", () => {
     describe("and a signed in user with privileges", () => {
         describe("and the user is a Reviewer", () => {
             options.headers.Authorization = reviewerToken;
+
             it("should be unable to download unreleased objects", () => {
 
             });
@@ -114,6 +116,7 @@ describe("When testing downloads", () => {
         });
         describe("and the user is a Curator", () => {
             options.headers.Authorization = curatorToken;
+
             it("should be unable to download unreleased objects", () => {
 
             });
@@ -145,6 +148,7 @@ describe("When testing downloads", () => {
         });
         describe("and the user is a Editor", () => {
             options.headers.Authorization = editorToken;
+
             it("should be unable to download unreleased objects", () => {
 
             });
@@ -165,6 +169,7 @@ describe("When testing downloads", () => {
         });
         describe("and the user is a Admin", () => {
             options.headers.Authorization = adminToken;
+
             it("should be unable to download unreleased objects", () => {
 
             });

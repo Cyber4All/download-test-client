@@ -24,4 +24,4 @@ export function generateUserToken(user: Requester) {
       audience: 'https://clark.center',
     };
     return jwt.sign(payload, process.env.KEY, options);
-  }
+}

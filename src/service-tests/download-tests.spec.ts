@@ -1,6 +1,10 @@
-import * as request from "request-promise";
+const request = require('request-promise');
+import * as dotenv from "dotenv";
 import { generateUserToken } from "../drivers/jwt/tokenManager";
 import { regularUser, reviewerUser, curatorUser, editorUser, adminUser } from "../users";
+import { MongoDB } from "../drivers/database/mongodb/mongodb";
+
+dotenv.config(); // TODO move this to a higher up file
 
 let regToken, reviewerToken, curatorToken, editorToken, adminToken;
 
@@ -25,7 +29,10 @@ beforeAll(() => {
     adminToken = generateUserToken(adminUser);
 });
 
-describe("When testing downloads", () => {
+describe("When testing downloads", async () => {
+
+    const db: MongoDB = await MongoDB.getInstance();
+
     describe("and a unauthorized user", () => {
         // Set authorization header to empty since no user is logged in
         options.headers.Authorization = "";

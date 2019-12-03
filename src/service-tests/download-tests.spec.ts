@@ -39,7 +39,7 @@ beforeAll(async () => {
     editorToken = generateUserToken(editorUser);
     adminToken = generateUserToken(adminUser);
 
-    this.db = await MongoDB.getInstance();
+    db = await MongoDB.getInstance();
     releasedURI = getDownloadURI(await db.getObject("released"));
     waitingURI = getDownloadURI(await db.getObject("waiting"));
     proofingURI = getDownloadURI(await db.getObject("proofing"));

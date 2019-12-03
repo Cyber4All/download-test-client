@@ -275,23 +275,72 @@ describe("When testing downloads", () => {
             });
         });
         describe("and the user is a Editor", () => {
-            options.headers.Authorization = editorToken;
-
-            it("should be unable to download unreleased objects", () => {
-
+            it("should be unable to download unreleased objects", async () => {
+                setOptions(unreleasedURI, editorToken);
+                if (options.uri) {
+                    await expect(request(options)).rejects.toThrow();
+                } else {
+                    expect(true).toEqual(true);
+                }
             });
-            it("should be able to download released objects", () => {
-
+            it("should be able to download released objects", async () => {
+                setOptions(releasedURI, editorToken);
+                await expect(request(options)).resolves.toBeDefined();
             });
             describe("and the user is downloading a in review object", () => {
-                it("should download Waiting objects", () => {
-
+                describe("and the user downloads Waiting objects", () => {
+                    it("should download a object in one collection", async () => {
+                        setOptions(waitingURI, editorToken);
+                        if (options.uri) {
+                            await expect(request(options)).resolves.toBeDefined();
+                        } else {
+                            expect(true).toEqual(true);
+                        }
+                    });
+                    it("should download a object in another collection", async () => {
+                        setOptions(caeWaitingURI, editorToken);
+                        if (options.uri) {
+                            await expect(request(options)).resolves.toBeDefined();
+                        } else {
+                            expect(true).toEqual(true);
+                        }
+                    });
                 });
-                it("should download Review objects", () => {
-
+                describe("and the user downloads Review objects", () => {
+                    it("should download a object in one collection", async () => {
+                        setOptions(reviewURI, editorToken);
+                        if (options.uri) {
+                            await expect(request(options)).resolves.toBeDefined();
+                        } else {
+                            expect(true).toEqual(true);
+                        }
+                    });
+                    it("should download a object in another collection", async () => {
+                        setOptions(caeReviewURI, editorToken);
+                        if (options.uri) {
+                            await expect(request(options)).resolves.toBeDefined();
+                        } else {
+                            expect(true).toEqual(true);
+                        }
+                    });
                 });
-                it("should download Proofing objects", () => {
-
+                describe("and the user downloads Proofing objects", () => {
+                    it("should download a object in one collection", async () => {
+                        setOptions(proofingURI, editorToken);
+                        if (options.uri) {
+                            await expect(request(options)).resolves.toBeDefined();
+                        } else {
+                            expect(true).toEqual(true);
+                        }
+                    });
+                    it("should download a object in another collection", async () => {
+                        setOptions(caeProofingURI, editorToken);
+                        if (options.uri) {
+                            await expect(request(options)).resolves.toBeDefined();
+                        } else {
+                            expect(true).toEqual(true);
+                        }
+                    });
                 });
             });
         });
@@ -305,14 +354,29 @@ describe("When testing downloads", () => {
 
             });
             describe("and the user is downloading a in review object", () => {
-                it("should download Waiting objects", () => {
+                describe("and the user downloads Waiting objects", () => {
+                    it("should download a object in one collection", () => {
 
-                });
-                it("should download Review objects", () => {
+                    });
+                    it("should download a object in another collection", () => {
 
+                    });
                 });
-                it("should download Proofing objects", () => {
-                    
+                describe("and the user downloads Review objects", () => {
+                    it("should download a object in one collection", () => {
+
+                    });
+                    it("should download a object in another collection", () => {
+
+                    });
+                });
+                describe("and the user downloads Proofing objects", () => {
+                    it("should download a object in one collection", () => {
+
+                    });
+                    it("should download a object in another collection", () => {
+
+                    });
                 });
             });
         });

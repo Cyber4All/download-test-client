@@ -5,7 +5,7 @@ export const regularUser: Requester = {
     name: "clark can",
     email: "ccan@clark.center",
     organization: "towson university",
-    emailVerified: false,
+    emailVerified: true,
     accessGroups: []
 };
 
@@ -14,7 +14,7 @@ export const reviewerUser: Requester = {
     name: "clark edison",
     email: "cedison@clark.center",
     organization: "towson university",
-    emailVerified: false,
+    emailVerified: true,
     accessGroups: ["reviewer@nccp"]
 };
 
@@ -23,7 +23,7 @@ export const curatorUser: Requester = {
     name: "clark green",
     email: "cgreen@clark.center",
     organization: "towson university",
-    emailVerified: false,
+    emailVerified: true,
     accessGroups: ["curator@nccp"]
 };
 
@@ -32,7 +32,7 @@ export const editorUser: Requester = {
     name: "clark kent",
     email: "ckent@clark.center",
     organization: "towson university",
-    emailVerified: false,
+    emailVerified: true,
     accessGroups: ["editor"]
 };
 
@@ -41,6 +41,6 @@ export const adminUser: Requester = {
     name: "clark griswold",
     email: "cgriswold@clark.center",
     organization: "towson university",
-    emailVerified: false,
+    emailVerified: true,
     accessGroups: ["admin"]
 };

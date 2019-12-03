@@ -13,16 +13,14 @@ export class MongoDB {
     public static async getInstance() {
         if (this.instance === undefined) {
             await this.connect(process.env.CLARK_DB_URI);
-            this.instance = new MongoDB();
         }
         return this.instance;
     }
 
-    private static async connect(dbURI: string): Promise<MongoDB> {
+    private static async connect(dbURI: string) {
         const mongodbClient = await new MongoClient(dbURI, { useNewUrlParser: true }).connect();
-        const mongodb = new MongoDB();
-        mongodb.setDatabase(mongodbClient);
-        return mongodb;
+        this.instance = new MongoDB();
+        this.instance.setDatabase(mongodbClient);
     }
 
     setDatabase(mongodbClient: MongoClient) {
@@ -42,11 +40,21 @@ export class MongoDB {
         await this.utilityDb.collection('platform-outage-reports').updateOne({ name: 'downloads', resolved: null }, { $set: { updates }});
     }
 
-    async getReleasedObject() {
-        const object =  await this.onionDb.collection('objects').findOne({ status: 'released' });
-        const user = await this.onionDb.collection('users').findOne({ _id: object.authorID });
-        return { object, username: user.username };
-        // `https://api-gateway.clark.center/users/${}/learning-objects/${}/versions/${}/bundle`;
+    async getObject(status: string, collection?: string) {
+        const filter = { status };
+        if (collection) {
+            filter['collection'] = collection;
+        }
+
+        const object =  await this.onionDb.collection('objects').findOne(filter);
+        const result = { object, username: undefined };
+
+        if (object) {
+            const user = await this.onionDb.collection('users').findOne({ _id: object.authorID });
+            result['username'] = user.username;
+        }
+
+        return result;
     }
 
     async getUnreleasedObject() {

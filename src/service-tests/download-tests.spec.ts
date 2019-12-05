@@ -345,37 +345,71 @@ describe("When testing downloads", () => {
             });
         });
         describe("and the user is a Admin", () => {
-            options.headers.Authorization = adminToken;
-
-            it("should be unable to download unreleased objects", () => {
-
+            it("should be unable to download unreleased objects", async () => {
+                setOptions(unreleasedURI, adminToken);
+                if (options.uri) {
+                    await expect(request(options)).rejects.toThrowError();
+                } else {
+                    expect(true).toEqual(true);
+                }
             });
-            it("should be able to download released objects", () => {
-
+            it("should be able to download released objects", async () => {
+                setOptions(releasedURI, adminToken);
+                await expect(request(options)).resolves.toBeDefined();
             });
             describe("and the user is downloading a in review object", () => {
                 describe("and the user downloads Waiting objects", () => {
-                    it("should download a object in one collection", () => {
-
+                    it("should download a object in one collection", async () => {
+                        setOptions(waitingURI, adminToken);
+                        if (options.uri) {
+                            await expect(request(options)).resolves.toBeDefined();
+                        } else {
+                            expect(true).toEqual(true);
+                        }
                     });
-                    it("should download a object in another collection", () => {
-
+                    it("should download a object in another collection", async () => {
+                        setOptions(caeWaitingURI, adminToken);
+                        if (options.uri) {
+                            await expect(request(options)).resolves.toBeDefined();
+                        } else {
+                            expect(true).toEqual(true);
+                        }
                     });
                 });
                 describe("and the user downloads Review objects", () => {
-                    it("should download a object in one collection", () => {
-
+                    it("should download a object in one collection", async () => {
+                        setOptions(reviewURI, adminToken);
+                        if (options.uri) {
+                            await expect(request(options)).resolves.toBeDefined();
+                        } else {
+                            expect(true).toEqual(true);
+                        }
                     });
-                    it("should download a object in another collection", () => {
-
+                    it("should download a object in another collection", async () => {
+                        setOptions(caeReviewURI, adminToken);
+                        if (options.uri) {
+                            await expect(request(options)).resolves.toBeDefined();
+                        } else {
+                            expect(true).toEqual(true);
+                        }
                     });
                 });
                 describe("and the user downloads Proofing objects", () => {
-                    it("should download a object in one collection", () => {
-
+                    it("should download a object in one collection", async () => {
+                        setOptions(proofingURI, adminToken);
+                        if (options.uri) {
+                            await expect(request(options)).resolves.toBeDefined();
+                        } else {
+                            expect(true).toEqual(true);
+                        }
                     });
-                    it("should download a object in another collection", () => {
-
+                    it("should download a object in another collection", async () => {
+                        setOptions(caeProofingURI, adminToken);
+                        if (options.uri) {
+                            await expect(request(options)).resolves.toBeDefined();
+                        } else {
+                            expect(true).toEqual(true);
+                        }
                     });
                 });
             });

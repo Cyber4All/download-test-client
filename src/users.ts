@@ -1,46 +1,46 @@
-import { Requester } from "./drivers/jwt/tokenManager";
+import { Requester } from './drivers/jwt/tokenManager';
 
 export const regularUser: Requester = {
-    username: "ccan",
-    name: "clark can",
-    email: "ccan@clark.center",
-    organization: "towson university",
+    username: 'ccan',
+    name: 'clark can',
+    email: 'ccan@clark.center',
+    organization: 'towson university',
     emailVerified: true,
     accessGroups: []
 };
 
 export const reviewerUser: Requester = {
-    username: "cedison",
-    name: "clark edison",
-    email: "cedison@clark.center",
-    organization: "towson university",
+    username: 'cedison',
+    name: 'clark edison',
+    email: 'cedison@clark.center',
+    organization: 'towson university',
     emailVerified: true,
-    accessGroups: ["reviewer@nccp"]
+    accessGroups: ['reviewer@nccp']
 };
 
 export const curatorUser: Requester = {
-    username: "cgreen",
-    name: "clark green",
-    email: "cgreen@clark.center",
-    organization: "towson university",
+    username: 'cgreen',
+    name: 'clark green',
+    email: 'cgreen@clark.center',
+    organization: 'towson university',
     emailVerified: true,
-    accessGroups: ["curator@nccp"]
+    accessGroups: ['curator@nccp']
 };
 
 export const editorUser: Requester = {
-    username: "ckent",
-    name: "clark kent",
-    email: "ckent@clark.center",
-    organization: "towson university",
+    username: 'ckent',
+    name: 'clark kent',
+    email: 'ckent@clark.center',
+    organization: 'towson university',
     emailVerified: true,
-    accessGroups: ["editor"]
+    accessGroups: ['editor']
 };
 
 export const adminUser: Requester = {
-    username: "cgriswold",
-    name: "clark griswold",
-    email: "cgriswold@clark.center",
-    organization: "towson university",
+    username: 'cgriswold',
+    name: 'clark griswold',
+    email: 'cgriswold@clark.center',
+    organization: 'towson university',
     emailVerified: true,
-    accessGroups: ["admin"]
+    accessGroups: ['admin']
 };

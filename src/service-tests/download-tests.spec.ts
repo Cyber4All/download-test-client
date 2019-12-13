@@ -270,83 +270,98 @@ describe('When testing downloads', () => {
             });
         });
         describe('and the user is a Curator', () => {
-            it('should be unable to download unreleased objects', () => {
+            it('should be unable to download unreleased objects', done => {
                 setOptions(unreleasedURI, curatorToken);
                 if (options.url) {
                     request(options).on('response', (response) => {
                         expect(response.statusCode).toBe(403);
+                        done();
                     });
                 } else {
                     expect(true).toEqual(true);
+                    done();
                 }
             });
-            it('should be able to download released objects', () => {
+            it('should be able to download released objects', done => {
                 setOptions(releasedURI, curatorToken);
                 request(options).on('response', (response) => {
                     expect(response.statusCode).toBe(200);
+                    done();
                 });
             });
             describe('and the user is downloading a in review object outside of their collection', () => {
-                it('should not download Waiting objects', () => {
+                it('should not download Waiting objects', done => {
                     setOptions(caeWaitingURI, curatorToken);
                     if (options.url) {
                         request(options).on('response', (response) => {
                             expect(response.statusCode).toBe(403);
+                            done();
                         });
                     } else {
                         expect(true).toEqual(true);
+                        done();
                     }
                 });
-                it('should not download Review objects', () => {
+                it('should not download Review objects', done => {
                     setOptions(caeReviewURI, curatorToken);
                     if (options.url) {
                         request(options).on('response', (response) => {
                             expect(response.statusCode).toBe(403);
+                            done();
                         });
                     } else {
                         expect(true).toEqual(true);
+                        done();
                     }
                 });
-                it('should not download Proofing objects', () => {
+                it('should not download Proofing objects', done => {
                     setOptions(caeProofingURI, curatorToken);
                     if (options.url) {
                         request(options).on('response', (response) => {
                             expect(response.statusCode).toBe(403);
+                            done();
                         });
                     } else {
                         expect(true).toEqual(true);
+                        done();
                     }
                 });
             });
             describe('and the user is downloading a in review object in their collection', () => {
-                it('should download Waiting objects', () => {
+                it('should download Waiting objects', done => {
                     setOptions(waitingURI, curatorToken);
                     if (options.url) {
                         request(options).on('response', (response) => {
                             expect(response.statusCode).toBe(200);
+                            done();
                         });
                     } else {
                         expect(true).toEqual(true);
+                        done();
                     }
                 });
-                it('should download Review objects', () => {
+                it('should download Review objects', done => {
                     setOptions(reviewURI, curatorToken);
                     if (options.url) {
                         request(options).on('response', (response) => {
                             expect(response.statusCode).toBe(200);
+                            done();
                         });
                     } else {
                         expect(true).toEqual(true);
+                        done();
                     }
                 });
-                it('should download Proofing objects', () => {
+                it('should download Proofing objects', done => {
                     setOptions(proofingURI, curatorToken);
                     if (options.url) {
                         request(options).on('response', (response) => {
                             expect(response.statusCode).toBe(200);
+                            done();
                         });
                     } else {
                         expect(true).toEqual(true);
+                        done();
                     }
                 });
             });

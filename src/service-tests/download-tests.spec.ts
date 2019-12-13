@@ -8,8 +8,8 @@ dotenv.config(); // TODO move this to a higher up file
 
 let db: MongoDB;
 
-let regToken, reviewerToken, curatorToken, editorToken, adminToken;
-let releasedURI, waitingURI, proofingURI, reviewURI, unreleasedURI, caeWaitingURI, caeReviewURI, caeProofingURI;
+let regToken: string, reviewerToken: string, curatorToken: string, editorToken: string, adminToken: string;
+let releasedURI: string, waitingURI: string, proofingURI: string, reviewURI: string, unreleasedURI: string, caeWaitingURI: string, caeReviewURI: string, caeProofingURI: string;
 
 const options = {
     method: 'GET',

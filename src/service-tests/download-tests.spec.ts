@@ -367,86 +367,101 @@ describe('When testing downloads', () => {
             });
         });
         describe('and the user is a Editor', () => {
-            it('should be unable to download unreleased objects', () => {
+            it('should be unable to download unreleased objects', done => {
                 setOptions(unreleasedURI, editorToken);
                 if (options.url) {
                     request(options).on('response', (response) => {
                         expect(response.statusCode).toBe(403);
+                        done();
                     });
                 } else {
                     expect(true).toEqual(true);
+                    done();
                 }
             });
-            it('should be able to download released objects', () => {
+            it('should be able to download released objects', done => {
                 setOptions(releasedURI, editorToken);
                 request(options).on('response', (response) => {
                     expect(response.statusCode).toBe(200);
+                    done();
                 });
             });
             describe('and the user is downloading a in review object', () => {
                 describe('and the user downloads Waiting objects', () => {
-                    it('should download a object in one collection', () => {
+                    it('should download a object in one collection', done => {
                         setOptions(waitingURI, editorToken);
                         if (options.url) {
                             request(options).on('response', (response) => {
                                 expect(response.statusCode).toBe(200);
+                                done();
                             });
                         } else {
                             expect(true).toEqual(true);
+                            done();
                         }
                     });
-                    it('should download a object in another collection', () => {
+                    it('should download a object in another collection', done => {
                         setOptions(caeWaitingURI, editorToken);
                         if (options.url) {
                             request(options).on('response', (response) => {
                                 expect(response.statusCode).toBe(200);
+                                done();
                             });
                         } else {
                             expect(true).toEqual(true);
+                            done();
                         }
                     });
                 });
                 describe('and the user downloads Review objects', () => {
-                    it('should download a object in one collection', () => {
+                    it('should download a object in one collection', done => {
                         setOptions(reviewURI, editorToken);
                         if (options.url) {
                             request(options).on('response', (response) => {
                                 expect(response.statusCode).toBe(200);
+                                done();
                             });
                         } else {
                             expect(true).toEqual(true);
+                            done();
                         }
                     });
-                    it('should download a object in another collection', () => {
+                    it('should download a object in another collection', done => {
                         setOptions(caeReviewURI, editorToken);
                         if (options.url) {
                             request(options).on('response', (response) => {
                                 expect(response.statusCode).toBe(200);
+                                done();
                             });
                         } else {
                             expect(true).toEqual(true);
+                            done();
                         }
                     });
                 });
                 describe('and the user downloads Proofing objects', () => {
-                    it('should download a object in one collection', () => {
+                    it('should download a object in one collection', done => {
                         setOptions(proofingURI, editorToken);
                         if (options.url) {
                             request(options).on('response', (response) => {
                                 expect(response.statusCode).toBe(200);
+                                done();
                             });
                         } else {
                             expect(true).toEqual(true);
+                            done();
                         }
                     });
-                    it('should download a object in another collection', () => {
+                    it('should download a object in another collection', done => {
                         setOptions(caeProofingURI, editorToken);
                         if (options.url) {
                             request(options).on('response', (response) => {
                                 expect(response.statusCode).toBe(200);
+                                done();
                             });
                         } else {
                             expect(true).toEqual(true);
+                            done();
                         }
                     });
                 });

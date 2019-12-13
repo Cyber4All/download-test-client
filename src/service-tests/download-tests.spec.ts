@@ -54,51 +54,60 @@ beforeAll(async () => {
 describe('When testing downloads', () => {
 
     describe('and a unauthorized user', () => {
-        it('should be unable to download unrealeased objects', () => {
+        it('should be unable to download unrealeased objects', done => {
             setOptions(unreleasedURI, '');
             if (options.url) {
                 request(options).on('response', (response) => {
                     expect(response.statusCode).toBe(401);
+                    done();
                 });
             } else {
                 expect(true).toEqual(true);
+                done();
             }
         });
-        it('should be unable to download released objects', () => {
+        it('should be unable to download released objects', done => {
             setOptions(releasedURI, '');
             request(options).on('response', (response) => {
                 expect(response.statusCode).toBe(401);
+                done();
             });
         });
         describe('and be unable to download in review objects', () => {
-            it('should not download Waiting objects', () => {
+            it('should not download Waiting objects', done => {
                 setOptions(waitingURI, '');
                 if (options.url) {
                     request(options).on('response', (response) => {
                         expect(response.statusCode).toBe(401);
+                        done();
                     });
                 } else {
                     expect(true).toEqual(true);
+                    done();
                 }
             });
-            it('should not download Review objects', () => {
+            it('should not download Review objects', done => {
                 setOptions(reviewURI, '');
                 if (options.url) {
                     request(options).on('response', (response) => {
                         expect(response.statusCode).toBe(401);
+                        done();
                     });
                 } else {
                     expect(true).toEqual(true);
+                    done();
                 }
             });
-            it('should not download Proofing objects', () => {
+            it('should not download Proofing objects', done => {
                 setOptions(proofingURI, '');
                 if (options.url) {
                     request(options).on('response', (response) => {
                         expect(response.statusCode).toBe(401);
+                        done();
                     });
                 } else {
                     expect(true).toEqual(true);
+                    done();
                 }
             });
         });

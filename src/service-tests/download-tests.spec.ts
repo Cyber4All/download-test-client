@@ -20,6 +20,12 @@ const options = {
     },
     timeout: 200
 };
+const codes = {
+    ok: /200/,
+    unauthorized: /401/,
+    forbidden: /403/,
+    timedout: /TIMEDOUT/
+}
 
 function getDownloadURI({ object, username }) {
     if (object) {
@@ -59,20 +65,20 @@ describe('When testing downloads', () => {
         it('should be unable to download unrealeased objects', async () => {
             setOptions(unreleasedURI, '');
             if (options.uri) {
-                await expect(request(options)).rejects.toThrow();
+                await expect(request(options)).rejects.toThrow(codes.unauthorized);
             } else {
                 expect(true).toEqual(true);
             }
         });
         it('should be unable to download released objects', async () => {
             setOptions(releasedURI, '');
-            await expect(request(options)).rejects.toThrow();
+            await expect(request(options)).rejects.toThrow(codes.unauthorized);
         });
         describe('and be unable to download in review objects', () => {
             it('should not download Waiting objects', async () => {
                 setOptions(waitingURI, '');
                 if (options.uri) {
-                    await expect(request(options)).rejects.toThrow();
+                    await expect(request(options)).rejects.toThrow(codes.unauthorized);
                 } else {
                     expect(true).toEqual(true);
                 }
@@ -80,7 +86,7 @@ describe('When testing downloads', () => {
             it('should not download Review objects', async () => {
                 setOptions(reviewURI, '');
                 if (options.uri) {
-                    await expect(request(options)).rejects.toThrow();
+                    await expect(request(options)).rejects.toThrow(codes.unauthorized);
                 } else {
                     expect(true).toEqual(true);
                 }
@@ -88,7 +94,7 @@ describe('When testing downloads', () => {
             it('should not download Proofing objects', async () => {
                 setOptions(proofingURI, '');
                 if (options.uri) {
-                    await expect(request(options)).rejects.toThrow();
+                    await expect(request(options)).rejects.toThrow(codes.unauthorized);
                 } else {
                     expect(true).toEqual(true);
                 }
@@ -100,7 +106,7 @@ describe('When testing downloads', () => {
         it('should be unable to download unreleased objects', async () => {
             setOptions(unreleasedURI, regToken);
             if (options.uri) {
-                await expect(request(options)).rejects.toThrow();
+                await expect(request(options)).rejects.toThrow(codes.forbidden);
             } else {
                 expect(true).toEqual(true);
             }
@@ -110,14 +116,14 @@ describe('When testing downloads', () => {
                 setOptions(releasedURI, regToken);
                 await expect(request(options)).resolves.toBeDefined();
             } catch (e) {
-                expect(e.message).toMatch(/TIMEDOUT/);
+                expect(e.message).toMatch(codes.timedout);
             }
         });
         describe('and be unable to download in review objects', () => {
             it('should not download Waiting objects', async () => {
                 setOptions(waitingURI, regToken);
                 if (options.uri) {
-                    await expect(request(options)).rejects.toThrow();
+                    await expect(request(options)).rejects.toThrow(codes.forbidden);
                 } else {
                     expect(true).toEqual(true);
                 }
@@ -125,7 +131,7 @@ describe('When testing downloads', () => {
             it('should not download Review objects', async () => {
                 setOptions(reviewURI, regToken);
                 if (options.uri) {
-                    await expect(request(options)).rejects.toThrow();
+                    await expect(request(options)).rejects.toThrow(codes.forbidden);
                 } else {
                     expect(true).toEqual(true);
                 }
@@ -133,7 +139,7 @@ describe('When testing downloads', () => {
             it('should not download Proofing objects', async () => {
                 setOptions(proofingURI, regToken);
                 if (options.uri) {
-                    await expect(request(options)).rejects.toThrow();
+                    await expect(request(options)).rejects.toThrow(codes.forbidden);
                 } else {
                     expect(true).toEqual(true);
                 }
@@ -145,7 +151,7 @@ describe('When testing downloads', () => {
             it('should be unable to download unreleased objects', async () => {
                 setOptions(unreleasedURI, reviewerToken);
                 if (options.uri) {
-                    await expect(request(options)).rejects.toThrow();
+                    await expect(request(options)).rejects.toThrow(codes.forbidden);
                 } else {
                     expect(true).toEqual(true);
                 }
@@ -155,14 +161,14 @@ describe('When testing downloads', () => {
                     setOptions(releasedURI, reviewerToken);
                     await expect(request(options)).resolves.toBeDefined();
                 } catch (e) {
-                    expect(e.message).toMatch(/TIMEDOUT/);
+                    expect(e.message).toMatch(codes.timedout);
                 }
             });
             describe('and the user is downloading a in review object outside of their collection', () => {
                 it('should not download Waiting objects', async () => {
                     setOptions(caeWaitingURI, reviewerToken);
                     if (options.uri) {
-                        await expect(request(options)).rejects.toThrow();
+                        await expect(request(options)).rejects.toThrow(codes.forbidden);
                     } else {
                         expect(true).toEqual(true);
                     }
@@ -170,7 +176,7 @@ describe('When testing downloads', () => {
                 it('should not download Review objects', async () => {
                     setOptions(caeReviewURI, reviewerToken);
                     if (options.uri) {
-                        await expect(request(options)).rejects.toThrow();
+                        await expect(request(options)).rejects.toThrow(codes.forbidden);
                     } else {
                         expect(true).toEqual(true);
                     }
@@ -178,7 +184,7 @@ describe('When testing downloads', () => {
                 it('should not download Proofing objects', async () => {
                     setOptions(caeProofingURI, reviewerToken);
                     if (options.uri) {
-                        await expect(request(options)).rejects.toThrow();
+                        await expect(request(options)).rejects.toThrow(codes.forbidden);
                     } else {
                         expect(true).toEqual(true);
                     }
@@ -194,7 +200,7 @@ describe('When testing downloads', () => {
                             expect(true).toEqual(true);
                         }
                     } catch (e) {
-                        expect(e.message).toMatch(/TIMEDOUT/);
+                        expect(e.message).toMatch(codes.timedout);
                     }
                 });
                 it('should download Review objects', async () => {
@@ -206,7 +212,7 @@ describe('When testing downloads', () => {
                             expect(true).toEqual(true);
                         }
                     } catch (e) {
-                        expect(e.message).toMatch(/TIMEDOUT/);
+                        expect(e.message).toMatch(codes.timedout);
                     }
                 });
                 it('should download Proofing objects', async () => {
@@ -218,7 +224,7 @@ describe('When testing downloads', () => {
                             expect(true).toEqual(true);
                         }
                     } catch (e) {
-                        expect(e.message).toMatch(/TIMEDOUT/);
+                        expect(e.message).toMatch(codes.timedout);
                     }
                 });
             });
@@ -227,7 +233,7 @@ describe('When testing downloads', () => {
             it('should be unable to download unreleased objects', async () => {
                 setOptions(unreleasedURI, curatorToken);
                 if (options.uri) {
-                    await expect(request(options)).rejects.toThrow();
+                    await expect(request(options)).rejects.toThrow(codes.forbidden);
                 } else {
                     expect(true).toEqual(true);
                 }
@@ -237,14 +243,14 @@ describe('When testing downloads', () => {
                     setOptions(releasedURI, curatorToken);
                     await expect(request(options)).resolves.toBeDefined();
                 } catch (e) {
-                    expect(e.message).toMatch(/TIMEDOUT/);
+                    expect(e.message).toMatch(codes.timedout);
                 }
             });
             describe('and the user is downloading a in review object outside of their collection', () => {
                 it('should not download Waiting objects', async () => {
                     setOptions(caeWaitingURI, curatorToken);
                     if (options.uri) {
-                        await expect(request(options)).rejects.toThrow();
+                        await expect(request(options)).rejects.toThrow(codes.forbidden);
                     } else {
                         expect(true).toEqual(true);
                     }
@@ -252,7 +258,7 @@ describe('When testing downloads', () => {
                 it('should not download Review objects', async () => {
                     setOptions(caeReviewURI, curatorToken);
                     if (options.uri) {
-                        await expect(request(options)).rejects.toThrow();
+                        await expect(request(options)).rejects.toThrow(codes.forbidden);
                     } else {
                         expect(true).toEqual(true);
                     }
@@ -260,7 +266,7 @@ describe('When testing downloads', () => {
                 it('should not download Proofing objects', async () => {
                     setOptions(caeProofingURI, curatorToken);
                     if (options.uri) {
-                        await expect(request(options)).rejects.toThrow();
+                        await expect(request(options)).rejects.toThrow(codes.forbidden);
                     } else {
                         expect(true).toEqual(true);
                     }
@@ -276,7 +282,7 @@ describe('When testing downloads', () => {
                             expect(true).toEqual(true);
                         }
                     } catch (e) {
-                        expect(e.message).toMatch(/TIMEDOUT/);
+                        expect(e.message).toMatch(codes.timedout);
                     }
                 });
                 it('should download Review objects', async () => {
@@ -288,7 +294,7 @@ describe('When testing downloads', () => {
                             expect(true).toEqual(true);
                         }
                     } catch (e) {
-                        expect(e.message).toMatch(/TIMEDOUT/);
+                        expect(e.message).toMatch(codes.timedout);
                     }
                 });
                 it('should download Proofing objects', async () => {
@@ -300,7 +306,7 @@ describe('When testing downloads', () => {
                             expect(true).toEqual(true);
                         }
                     } catch (e) {
-                        expect(e.message).toMatch(/TIMEDOUT/);
+                        expect(e.message).toMatch(codes.timedout);
                     }
                 });
             });
@@ -309,7 +315,7 @@ describe('When testing downloads', () => {
             it('should be unable to download unreleased objects', async () => {
                 setOptions(unreleasedURI, editorToken);
                 if (options.uri) {
-                    await expect(request(options)).rejects.toThrow();
+                    await expect(request(options)).rejects.toThrow(codes.forbidden);
                 } else {
                     expect(true).toEqual(true);
                 }
@@ -319,7 +325,7 @@ describe('When testing downloads', () => {
                     setOptions(releasedURI, editorToken);
                     await expect(request(options)).resolves.toBeDefined();
                 } catch (e) {
-                    expect(e.message).toMatch(/TIMEDOUT/);
+                    expect(e.message).toMatch(codes.timedout);
                 }
             });
             describe('and the user is downloading a in review object', () => {
@@ -333,7 +339,7 @@ describe('When testing downloads', () => {
                                 expect(true).toEqual(true);
                             }
                         } catch (e) {
-                            expect(e.message).toMatch(/TIMEDOUT/);
+                            expect(e.message).toMatch(codes.timedout);
                         }
                     });
                     it('should download a object in another collection', async () => {
@@ -345,7 +351,7 @@ describe('When testing downloads', () => {
                                 expect(true).toEqual(true);
                             }
                         } catch (e) {
-                            expect(e.message).toMatch(/TIMEDOUT/);
+                            expect(e.message).toMatch(codes.timedout);
                         }
                     });
                 });
@@ -359,7 +365,7 @@ describe('When testing downloads', () => {
                                 expect(true).toEqual(true);
                             }
                         } catch (e) {
-                            expect(e.message).toMatch(/TIMEDOUT/);
+                            expect(e.message).toMatch(codes.timedout);
                         }
                     });
                     it('should download a object in another collection', async () => {
@@ -371,7 +377,7 @@ describe('When testing downloads', () => {
                                 expect(true).toEqual(true);
                             }
                         } catch (e) {
-                            expect(e.message).toMatch(/TIMEDOUT/);
+                            expect(e.message).toMatch(codes.timedout);
                         }
                     });
                 });
@@ -385,7 +391,7 @@ describe('When testing downloads', () => {
                                 expect(true).toEqual(true);
                             }
                         } catch (e) {
-                            expect(e.message).toMatch(/TIMEDOUT/);
+                            expect(e.message).toMatch(codes.timedout);
                         }
                     });
                     it('should download a object in another collection', async () => {
@@ -397,7 +403,7 @@ describe('When testing downloads', () => {
                                 expect(true).toEqual(true);
                             }
                         } catch (e) {
-                            expect(e.message).toMatch(/TIMEDOUT/);
+                            expect(e.message).toMatch(codes.timedout);
                         }
                     });
                 });
@@ -407,7 +413,7 @@ describe('When testing downloads', () => {
             it('should be unable to download unreleased objects', async () => {
                 setOptions(unreleasedURI, adminToken);
                 if (options.uri) {
-                    await expect(request(options)).rejects.toThrowError();
+                    await expect(request(options)).rejects.toThrowError(codes.forbidden);
                 } else {
                     expect(true).toEqual(true);
                 }
@@ -417,7 +423,7 @@ describe('When testing downloads', () => {
                     setOptions(releasedURI, adminToken);
                     await expect(request(options)).resolves.toBeDefined();
                 } catch (e) {
-                    expect(e.message).toMatch(/TIMEDOUT/);
+                    expect(e.message).toMatch(codes.timedout);
                 }
             });
             describe('and the user is downloading a in review object', () => {
@@ -431,7 +437,7 @@ describe('When testing downloads', () => {
                                 expect(true).toEqual(true);
                             }
                         } catch (e) {
-                            expect(e.message).toMatch(/TIMEDOUT/);
+                            expect(e.message).toMatch(codes.timedout);
                         }
                     });
                     it('should download a object in another collection', async () => {
@@ -443,7 +449,7 @@ describe('When testing downloads', () => {
                                 expect(true).toEqual(true);
                             }
                         } catch (e) {
-                            expect(e.message).toMatch(/TIMEDOUT/);
+                            expect(e.message).toMatch(codes.timedout);
                         }
                     });
                 });
@@ -457,7 +463,7 @@ describe('When testing downloads', () => {
                                 expect(true).toEqual(true);
                             }
                         } catch (e) {
-                            expect(e.message).toMatch(/TIMEDOUT/);
+                            expect(e.message).toMatch(codes.timedout);
                         }
                     });
                     it('should download a object in another collection', async () => {
@@ -469,7 +475,7 @@ describe('When testing downloads', () => {
                                 expect(true).toEqual(true);
                             }
                         } catch (e) {
-                            expect(e.message).toMatch(/TIMEDOUT/);
+                            expect(e.message).toMatch(codes.timedout);
                         }
                     });
                 });
@@ -483,7 +489,7 @@ describe('When testing downloads', () => {
                                 expect(true).toEqual(true);
                             }
                         } catch (e) {
-                            expect(e.message).toMatch(/TIMEDOUT/);
+                            expect(e.message).toMatch(codes.timedout);
                         }
                     });
                     it('should download a object in another collection', async () => {
@@ -495,7 +501,7 @@ describe('When testing downloads', () => {
                                 expect(true).toEqual(true);
                             }
                         } catch (e) {
-                            expect(e.message).toMatch(/TIMEDOUT/);
+                            expect(e.message).toMatch(codes.timedout);
                         }
                     });
                 });

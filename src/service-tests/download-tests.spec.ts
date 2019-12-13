@@ -113,134 +113,158 @@ describe('When testing downloads', () => {
         });
     });
     describe('and a signed in user with no privileges', () => {
-        it('should be unable to download unreleased objects', () => {
+        it('should be unable to download unreleased objects', done => {
             setOptions(unreleasedURI, regToken);
             if (options.url) {
                 request(options).on('response', (response) => {
                     expect(response.statusCode).toBe(403);
+                    done();
                 });
             } else {
                 expect(true).toEqual(true);
+                done();
             }
         });
-        it('should be able to download released objects', () => {
+        it('should be able to download released objects', done => {
             setOptions(releasedURI, regToken);
             request(options).on('response', (response) => {
                 expect(response.statusCode).toBe(200);
+                done();
             });
         });
         describe('and be unable to download in review objects', () => {
-            it('should not download Waiting objects', () => {
+            it('should not download Waiting objects', done => {
                 setOptions(waitingURI, regToken);
                 if (options.url) {
                     request(options).on('response', (response) => {
                         expect(response.statusCode).toBe(403);
+                        done();
                     });
                 } else {
                     expect(true).toEqual(true);
+                    done();
                 }
             });
-            it('should not download Review objects', () => {
+            it('should not download Review objects', done => {
                 setOptions(reviewURI, regToken);
                 if (options.url) {
                     request(options).on('response', (response) => {
                         expect(response.statusCode).toBe(403);
+                        done();
                     });
                 } else {
                     expect(true).toEqual(true);
+                    done();
                 }
             });
-            it('should not download Proofing objects', () => {
+            it('should not download Proofing objects', done => {
                 setOptions(proofingURI, regToken);
                 if (options.url) {
                     request(options).on('response', (response) => {
                         expect(response.statusCode).toBe(403);
+                        done();
                     });
                 } else {
                     expect(true).toEqual(true);
+                    done();
                 }
             });
         });
     });
     describe('and a signed in user with privileges', () => {
         describe('and the user is a Reviewer', () => {
-            it('should be unable to download unreleased objects', () => {
+            it('should be unable to download unreleased objects', done => {
                 setOptions(unreleasedURI, reviewerToken);
                 if (options.url) {
                     request(options).on('response', (response) => {
                         expect(response.statusCode).toBe(403);
+                        done();
                     });
                 } else {
                     expect(true).toEqual(true);
+                    done();
                 }
             });
-            it('should be able to download released objects', () => {
+            it('should be able to download released objects', done => {
                 setOptions(releasedURI, reviewerToken);
                 request(options).on('response', (response) => {
                     expect(response.statusCode).toBe(200);
+                    done();
                 });
             });
             describe('and the user is downloading a in review object outside of their collection', () => {
-                it('should not download Waiting objects', () => {
+                it('should not download Waiting objects', done => {
                     setOptions(caeWaitingURI, reviewerToken);
                     if (options.url) {
                         request(options).on('response', (response) => {
                             expect(response.statusCode).toBe(403);
+                            done();
                         });
                     } else {
                         expect(true).toEqual(true);
+                        done();
                     }
                 });
-                it('should not download Review objects', () => {
+                it('should not download Review objects', done => {
                     setOptions(caeReviewURI, reviewerToken);
                     if (options.url) {
                         request(options).on('response', (response) => {
                             expect(response.statusCode).toBe(403);
+                            done();
                         });
                     } else {
                         expect(true).toEqual(true);
+                        done();
                     }
                 });
-                it('should not download Proofing objects', () => {
+                it('should not download Proofing objects', done => {
                     setOptions(caeProofingURI, reviewerToken);
                     if (options.url) {
                         request(options).on('response', (response) => {
                             expect(response.statusCode).toBe(403);
+                            done();
                         });
                     } else {
                         expect(true).toEqual(true);
+                        done();
                     }
                 });
             });
             describe('and the user is downloading a in review object in their collection', () => {
-                it('should download Waiting objects', () => {
+                it('should download Waiting objects', done => {
                     setOptions(waitingURI, reviewerToken);
                     if (options.url) {
                         request(options).on('response', (response) => {
                             expect(response.statusCode).toBe(200);
+                            done();
                         });
                     } else {
                         expect(true).toEqual(true);
+                        done();
                     }
                 });
-                it('should download Review objects', () => {
+                it('should download Review objects', done => {
                     setOptions(reviewURI, reviewerToken);
                     if (options.url) {
                         request(options).on('response', (response) => {
                             expect(response.statusCode).toBe(200);
+                            done();
                         });
                     } else {
                         expect(true).toEqual(true);
+                        done();
                     }
                 });
-                it('should download Proofing objects', () => {
+                it('should download Proofing objects', done => {
                     setOptions(proofingURI, reviewerToken);
                     if (options.url) {
                         request(options).on('response', (response) => {
                             expect(response.statusCode).toBe(200);
+                            done();
                         });
                     } else {
                         expect(true).toEqual(true);
+                        done();
                     }
                 });
             });

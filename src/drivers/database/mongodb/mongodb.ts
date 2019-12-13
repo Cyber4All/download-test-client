@@ -11,7 +11,7 @@ export class MongoDB {
     private constructor() {}
 
     public static async getInstance() {
-        if (this.instance === undefined) {
+        if (!this.instance) {
             await this.connect(process.env.CLARK_DB_URI);
         }
         return this.instance;
@@ -40,24 +40,36 @@ export class MongoDB {
         await this.utilityDb.collection('platform-outage-reports').updateOne({ name: 'downloads', resolved: null }, { $set: { updates }});
     }
 
-    async getObject(status: string, collection?: string) {
-        const filter = { status };
-        if (collection) {
-            filter['collection'] = collection;
-        }
-
-        const object =  await this.onionDb.collection('objects').findOne(filter);
-        const result = { object, username: undefined };
-
-        if (object) {
-            const user = await this.onionDb.collection('users').findOne({ _id: object.authorID });
-            result['username'] = user.username;
-        }
-
-        return result;
+    private async getAuthorUsername(authorID: string) {
+        const user = await this.onionDb.collection('users').findOne({ _id: authorID });
+        return user.username;
     }
 
-    async getUnreleasedObject() {
+    private setObjectCollectionFilter(status: string, collection?: string) {
+        const filter = {};
+        if (collection) {
+            filter['$and'] = [{ status }, { collection }];
+        } else {
+            filter['status'] = status;
+        }
+        return filter;
+    }
 
+    private async getObject(filter) {
+        const objects =  await this.onionDb.collection('objects').aggregate([
+            { $match: filter },
+            { $sample: { size: 1 }}
+        ]).toArray();
+        return objects.length == 0 ? undefined : objects[0];
+    }
+
+    async getObjectAndAuthUsername(status: string, collection?: string) {
+        const filter = this.setObjectCollectionFilter(status, collection);
+        const object = await this.getObject(filter);
+        let username: string;
+        if (object) {
+            username = await this.getAuthorUsername(object.authorID);
+        }
+        return {object, username};
     }
 }

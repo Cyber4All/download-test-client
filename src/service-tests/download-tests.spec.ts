@@ -42,15 +42,15 @@ beforeAll(async () => {
     adminToken = generateUserToken(adminUser);
 
     db = await MongoDB.getInstance();
-    releasedURI = getDownloadURI(await db.getObject("released"));
-    waitingURI = getDownloadURI(await db.getObject("waiting", "nccp"));
-    proofingURI = getDownloadURI(await db.getObject("proofing", "nccp"));
-    reviewURI = getDownloadURI(await db.getObject("review", "nccp"));
-    unreleasedURI = getDownloadURI(await db.getObject("unreleased"));
+    releasedURI = getDownloadURI(await db.getObjectAndAuthUsername("released"));
+    waitingURI = getDownloadURI(await db.getObjectAndAuthUsername("waiting", "nccp"));
+    proofingURI = getDownloadURI(await db.getObjectAndAuthUsername("proofing", "nccp"));
+    reviewURI = getDownloadURI(await db.getObjectAndAuthUsername("review", "nccp"));
+    unreleasedURI = getDownloadURI(await db.getObjectAndAuthUsername("unreleased"));
 
-    caeWaitingURI = getDownloadURI(await db.getObject("waiting", "cae_community"));
-    caeReviewURI = getDownloadURI(await db.getObject("review", "cae_community"));
-    caeProofingURI = getDownloadURI(await db.getObject("proofing", "cae_community"));
+    caeWaitingURI = getDownloadURI(await db.getObjectAndAuthUsername("waiting", "cae_community"));
+    caeReviewURI = getDownloadURI(await db.getObjectAndAuthUsername("review", "cae_community"));
+    caeProofingURI = getDownloadURI(await db.getObjectAndAuthUsername("proofing", "cae_community"));
 });
 
 describe("When testing downloads", () => {

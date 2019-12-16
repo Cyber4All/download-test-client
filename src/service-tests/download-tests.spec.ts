@@ -19,7 +19,11 @@ const options = {
     }
 };
 
-function getDownloadURI({ object, username }) {
+/**
+ * Returns a download URI for a given learning object
+ * @param param0 Contians the learning object to download and its author's username
+ */
+function getDownloadURI({ object, username }): string {
     if (object) {
         return `${ process.env.BASE_API_URL }/users/${ username }/learning-objects/${ object.cuid }/versions/${ object.version }/bundle`;
     } else {
@@ -27,7 +31,12 @@ function getDownloadURI({ object, username }) {
     }
 }
 
-function setOptions(uri: string, token: string) {
+/**
+ * Sets the request options
+ * @param uri The object download URI
+ * @param token The user's bearer token
+ */
+function setOptions(uri: string, token: string): void {
     options.url = uri;
     options.headers.Authorization = 'Bearer ' + token;
 }
@@ -52,7 +61,6 @@ beforeAll(async () => {
 });
 
 describe('When testing downloads', () => {
-
     describe('and a unauthorized user', () => {
         it('should be unable to download unrealeased objects', done => {
             setOptions(unreleasedURI, '');

@@ -60,9 +60,9 @@ beforeAll(async () => {
     caeProofingURI = getDownloadURI(await db.getObjectAndAuthUsername('proofing', 'cae_community'));
 });
 
-describe('When testing downloads', () => {
-    describe('and a unauthorized user', () => {
-        it('should be unable to download unrealeased objects', done => {
+describe('When a Learning Object is downloaded', () => {
+    describe('and the requester is unauthorized', () => {
+        it('should return a status code of 401 when downloading unreleased objects', done => {
             setOptions(unreleasedURI, '');
             // If a learning object fitting the specified requirements exist, try to download it
             if (options.url) {
@@ -75,15 +75,15 @@ describe('When testing downloads', () => {
                 done();
             }
         });
-        it('should be unable to download released objects', done => {
+        it('should return a status code of 401 when downloading released objects', done => {
             setOptions(releasedURI, '');
             request(options).on('response', (response) => {
                 expect(response.statusCode).toBe(401);
                 done();
             });
         });
-        describe('and be unable to download in review objects', () => {
-            it('should not download Waiting objects', done => {
+        describe('and downloading an in review object', () => {
+            it('should return a status code of 401 when downloading waiting objects', done => {
                 setOptions(waitingURI, '');
                 // If a learning object fitting the specified requirements exist, try to download it
                 if (options.url) {
@@ -96,7 +96,7 @@ describe('When testing downloads', () => {
                     done();
                 }
             });
-            it('should not download Review objects', done => {
+            it('should return a status code of 401 when downloading in review objects', done => {
                 setOptions(reviewURI, '');
                 // If a learning object fitting the specified requirements exist, try to download it
                 if (options.url) {
@@ -109,7 +109,7 @@ describe('When testing downloads', () => {
                     done();
                 }
             });
-            it('should not download Proofing objects', done => {
+            it('should return a status code of 401 when downloading proofing objects', done => {
                 setOptions(proofingURI, '');
                 // If a learning object fitting the specified requirements exist, try to download it
                 if (options.url) {
@@ -124,8 +124,8 @@ describe('When testing downloads', () => {
             });
         });
     });
-    describe('and a signed in user with no privileges', () => {
-        it('should be unable to download unreleased objects', done => {
+    describe('and the requester has no privileges', () => {
+        it('should return a status code of 403 when downloading unreleased objects', done => {
             setOptions(unreleasedURI, regToken);
             // If a learning object fitting the specified requirements exist, try to download it
             if (options.url) {
@@ -138,15 +138,15 @@ describe('When testing downloads', () => {
                 done();
             }
         });
-        it('should be able to download released objects', done => {
+        it('should return a status code of 200 when downloading released objects', done => {
             setOptions(releasedURI, regToken);
             request(options).on('response', (response) => {
                 expect(response.statusCode).toBe(200);
                 done();
             });
         });
-        describe('and be unable to download in review objects', () => {
-            it('should not download Waiting objects', done => {
+        describe('and downloading an in review object', () => {
+            it('should return a status code of 403 when downloading waiting objects', done => {
                 setOptions(waitingURI, regToken);
                 // If a learning object fitting the specified requirements exist, try to download it
                 if (options.url) {
@@ -159,7 +159,7 @@ describe('When testing downloads', () => {
                     done();
                 }
             });
-            it('should not download Review objects', done => {
+            it('should return a status code of 403 when downloading in review objects', done => {
                 setOptions(reviewURI, regToken);
                 // If a learning object fitting the specified requirements exist, try to download it
                 if (options.url) {
@@ -172,7 +172,7 @@ describe('When testing downloads', () => {
                     done();
                 }
             });
-            it('should not download Proofing objects', done => {
+            it('should return a status code of 403 when downloading proofing objects', done => {
                 setOptions(proofingURI, regToken);
                 // If a learning object fitting the specified requirements exist, try to download it
                 if (options.url) {
@@ -187,9 +187,9 @@ describe('When testing downloads', () => {
             });
         });
     });
-    describe('and a signed in user with privileges', () => {
-        describe('and the user is a Reviewer', () => {
-            it('should be unable to download unreleased objects', done => {
+    describe('and the requester has privileges', () => {
+        describe('and the requester has Reviewer privileges', () => {
+            it('should return a status code of 403 when downloading unreleased objects', done => {
                 setOptions(unreleasedURI, reviewerToken);
                 // If a learning object fitting the specified requirements exist, try to download it
                 if (options.url) {
@@ -202,15 +202,15 @@ describe('When testing downloads', () => {
                     done();
                 }
             });
-            it('should be able to download released objects', done => {
+            it('should return a status code of 200 when downloading released objects', done => {
                 setOptions(releasedURI, reviewerToken);
                 request(options).on('response', (response) => {
                     expect(response.statusCode).toBe(200);
                     done();
                 });
             });
-            describe('and the user is downloading a in review object outside of their collection', () => {
-                it('should not download Waiting objects', done => {
+            describe('and downloading a in review object outside of their collection', () => {
+                it('should return a status code of 403 when downloading waiting objects', done => {
                     setOptions(caeWaitingURI, reviewerToken);
                     // If a learning object fitting the specified requirements exist, try to download it
                     if (options.url) {
@@ -223,7 +223,7 @@ describe('When testing downloads', () => {
                         done();
                     }
                 });
-                it('should not download Review objects', done => {
+                it('should return a status code of 403 when downloading in review objects', done => {
                     setOptions(caeReviewURI, reviewerToken);
                     // If a learning object fitting the specified requirements exist, try to download it
                     if (options.url) {
@@ -236,7 +236,7 @@ describe('When testing downloads', () => {
                         done();
                     }
                 });
-                it('should not download Proofing objects', done => {
+                it('should return a status code of 403 when downloading proofing objects', done => {
                     setOptions(caeProofingURI, reviewerToken);
                     // If a learning object fitting the specified requirements exist, try to download it
                     if (options.url) {
@@ -250,8 +250,8 @@ describe('When testing downloads', () => {
                     }
                 });
             });
-            describe('and the user is downloading a in review object in their collection', () => {
-                it('should download Waiting objects', done => {
+            describe('and downloading a in review object in their collection', () => {
+                it('should return a status code of 200 when downloading waiting objects', done => {
                     setOptions(waitingURI, reviewerToken);
                     // If a learning object fitting the specified requirements exist, try to download it
                     if (options.url) {
@@ -264,7 +264,7 @@ describe('When testing downloads', () => {
                         done();
                     }
                 });
-                it('should download Review objects', done => {
+                it('should return a status code of 200 when downloading in review objects', done => {
                     setOptions(reviewURI, reviewerToken);
                     // If a learning object fitting the specified requirements exist, try to download it
                     if (options.url) {
@@ -277,7 +277,7 @@ describe('When testing downloads', () => {
                         done();
                     }
                 });
-                it('should download Proofing objects', done => {
+                it('should return a status code of 200 when downloading proofing objects', done => {
                     setOptions(proofingURI, reviewerToken);
                     // If a learning object fitting the specified requirements exist, try to download it
                     if (options.url) {
@@ -292,8 +292,8 @@ describe('When testing downloads', () => {
                 });
             });
         });
-        describe('and the user is a Curator', () => {
-            it('should be unable to download unreleased objects', done => {
+        describe('and the requester has Curator privileges', () => {
+            it('should return a status code of 403 when downloading unreleased objects', done => {
                 setOptions(unreleasedURI, curatorToken);
                 // If a learning object fitting the specified requirements exist, try to download it
                 if (options.url) {
@@ -306,15 +306,15 @@ describe('When testing downloads', () => {
                     done();
                 }
             });
-            it('should be able to download released objects', done => {
+            it('should return a status code of 200 when downloading released objects', done => {
                 setOptions(releasedURI, curatorToken);
                 request(options).on('response', (response) => {
                     expect(response.statusCode).toBe(200);
                     done();
                 });
             });
-            describe('and the user is downloading a in review object outside of their collection', () => {
-                it('should not download Waiting objects', done => {
+            describe('and downloading a in review object outside of their collection', () => {
+                it('should return a status code of 403 when downloading waiting objects', done => {
                     setOptions(caeWaitingURI, curatorToken);
                     // If a learning object fitting the specified requirements exist, try to download it
                     if (options.url) {
@@ -327,7 +327,7 @@ describe('When testing downloads', () => {
                         done();
                     }
                 });
-                it('should not download Review objects', done => {
+                it('should return a status code of 403 when downloading in review objects', done => {
                     setOptions(caeReviewURI, curatorToken);
                     // If a learning object fitting the specified requirements exist, try to download it
                     if (options.url) {
@@ -340,7 +340,7 @@ describe('When testing downloads', () => {
                         done();
                     }
                 });
-                it('should not download Proofing objects', done => {
+                it('should return a status code of 403 when downloading proofing objects', done => {
                     setOptions(caeProofingURI, curatorToken);
                     // If a learning object fitting the specified requirements exist, try to download it
                     if (options.url) {
@@ -354,8 +354,8 @@ describe('When testing downloads', () => {
                     }
                 });
             });
-            describe('and the user is downloading a in review object in their collection', () => {
-                it('should download Waiting objects', done => {
+            describe('and downloading a in review object in their collection', () => {
+                it('should return a status code of 200 when downloading waiting objects', done => {
                     setOptions(waitingURI, curatorToken);
                     // If a learning object fitting the specified requirements exist, try to download it
                     if (options.url) {
@@ -368,7 +368,7 @@ describe('When testing downloads', () => {
                         done();
                     }
                 });
-                it('should download Review objects', done => {
+                it('should return a status code of 200 when downloading in review objects', done => {
                     setOptions(reviewURI, curatorToken);
                     // If a learning object fitting the specified requirements exist, try to download it
                     if (options.url) {
@@ -381,7 +381,7 @@ describe('When testing downloads', () => {
                         done();
                     }
                 });
-                it('should download Proofing objects', done => {
+                it('should return a status code of 200 when downloading proofing objects', done => {
                     setOptions(proofingURI, curatorToken);
                     // If a learning object fitting the specified requirements exist, try to download it
                     if (options.url) {
@@ -396,8 +396,8 @@ describe('When testing downloads', () => {
                 });
             });
         });
-        describe('and the user is a Editor', () => {
-            it('should be unable to download unreleased objects', done => {
+        describe('and the requester has Editor privileges', () => {
+            it('should return a status code of 403 when downloading unreleased objects', done => {
                 setOptions(unreleasedURI, editorToken);
                 // If a learning object fitting the specified requirements exist, try to download it
                 if (options.url) {
@@ -410,16 +410,16 @@ describe('When testing downloads', () => {
                     done();
                 }
             });
-            it('should be able to download released objects', done => {
+            it('should return a status code of 200 when downloading released objects', done => {
                 setOptions(releasedURI, editorToken);
                 request(options).on('response', (response) => {
                     expect(response.statusCode).toBe(200);
                     done();
                 });
             });
-            describe('and the user is downloading a in review object', () => {
-                describe('and the user downloads Waiting objects', () => {
-                    it('should download a object in one collection', done => {
+            describe('and downloading a in review object', () => {
+                describe('and downloading waiting objects', () => {
+                    it('should return a status code of 200 when downloading waiting objects from one collection', done => {
                         setOptions(waitingURI, editorToken);
                         // If a learning object fitting the specified requirements exist, try to download it
                         if (options.url) {
@@ -432,7 +432,7 @@ describe('When testing downloads', () => {
                             done();
                         }
                     });
-                    it('should download a object in another collection', done => {
+                    it('should return a status code of 200 when downloading waiting objects from another collection', done => {
                         setOptions(caeWaitingURI, editorToken);
                         // If a learning object fitting the specified requirements exist, try to download it
                         if (options.url) {
@@ -446,8 +446,8 @@ describe('When testing downloads', () => {
                         }
                     });
                 });
-                describe('and the user downloads Review objects', () => {
-                    it('should download a object in one collection', done => {
+                describe('and downloading in review objects', () => {
+                    it('should return a status code of 200 when downloading in review objects from one collection', done => {
                         setOptions(reviewURI, editorToken);
                         // If a learning object fitting the specified requirements exist, try to download it
                         if (options.url) {
@@ -460,7 +460,7 @@ describe('When testing downloads', () => {
                             done();
                         }
                     });
-                    it('should download a object in another collection', done => {
+                    it('should return a status code of 200 when downloading in review objects from another collection', done => {
                         setOptions(caeReviewURI, editorToken);
                         // If a learning object fitting the specified requirements exist, try to download it
                         if (options.url) {
@@ -474,8 +474,8 @@ describe('When testing downloads', () => {
                         }
                     });
                 });
-                describe('and the user downloads Proofing objects', () => {
-                    it('should download a object in one collection', done => {
+                describe('and downloading proofing objects', () => {
+                    it('should return a status code of 200 when downloading proofing objects from one collection', done => {
                         setOptions(proofingURI, editorToken);
                         // If a learning object fitting the specified requirements exist, try to download it
                         if (options.url) {
@@ -488,7 +488,7 @@ describe('When testing downloads', () => {
                             done();
                         }
                     });
-                    it('should download a object in another collection', done => {
+                    it('should return a status code of 200 when downloading proofing objects from another collection', done => {
                         setOptions(caeProofingURI, editorToken);
                         // If a learning object fitting the specified requirements exist, try to download it
                         if (options.url) {
@@ -504,8 +504,8 @@ describe('When testing downloads', () => {
                 });
             });
         });
-        describe('and the user is a Admin', () => {
-            it('should be unable to download unreleased objects', done => {
+        describe('and the requester has Admin privileges', () => {
+            it('should return a status code of 403 when downloading unreleased objects', done => {
                 setOptions(unreleasedURI, adminToken);
                 // If a learning object fitting the specified requirements exist, try to download it
                 if (options.url) {
@@ -518,16 +518,16 @@ describe('When testing downloads', () => {
                     done();
                 }
             });
-            it('should be able to download released objects', done => {
+            it('should return a status code of 200 when downloading released objects', done => {
                 setOptions(releasedURI, adminToken);
                 request(options).on('response', (response) => {
                     expect(response.statusCode).toBe(200);
                     done();
                 });
             });
-            describe('and the user is downloading a in review object', () => {
-                describe('and the user downloads Waiting objects', () => {
-                    it('should download a object in one collection', done => {
+            describe('and downloading a in review object', () => {
+                describe('and downloading waiting objects', () => {
+                    it('should return a status code of 200 when downloading waiting objects from one collection', done => {
                         setOptions(waitingURI, adminToken);
                         // If a learning object fitting the specified requirements exist, try to download it
                         if (options.url) {
@@ -540,7 +540,7 @@ describe('When testing downloads', () => {
                             done();
                         }
                     });
-                    it('should download a object in another collection', done => {
+                    it('should return a status code of 200 when downloading waiting objects from another collection', done => {
                         setOptions(caeWaitingURI, adminToken);
                         // If a learning object fitting the specified requirements exist, try to download it
                         if (options.url) {
@@ -554,8 +554,8 @@ describe('When testing downloads', () => {
                         }
                     });
                 });
-                describe('and the user downloads Review objects', () => {
-                    it('should download a object in one collection', done => {
+                describe('and downloading in review objects', () => {
+                    it('should return a status code of 200 when downloading in review objects from one collection', done => {
                         setOptions(reviewURI, adminToken);
                         // If a learning object fitting the specified requirements exist, try to download it
                         if (options.url) {
@@ -568,7 +568,7 @@ describe('When testing downloads', () => {
                             done();
                         }
                     });
-                    it('should download a object in another collection', done => {
+                    it('should return a status code of 200 when downloading in review objects from another collection', done => {
                         setOptions(caeReviewURI, adminToken);
                         // If a learning object fitting the specified requirements exist, try to download it
                         if (options.url) {
@@ -582,8 +582,8 @@ describe('When testing downloads', () => {
                         }
                     });
                 });
-                describe('and the user downloads Proofing objects', () => {
-                    it('should download a object in one collection', done => {
+                describe('and downloads proofing objects', () => {
+                    it('should return a status code of 200 when downloading proofing objects from one collection', done => {
                         setOptions(proofingURI, adminToken);
                         // If a learning object fitting the specified requirements exist, try to download it
                         if (options.url) {
@@ -596,7 +596,7 @@ describe('When testing downloads', () => {
                             done();
                         }
                     });
-                    it('should download a object in another collection', done => {
+                    it('should return a status code of 200 when downloading proofing objects from another collection', done => {
                         setOptions(caeProofingURI, adminToken);
                         // If a learning object fitting the specified requirements exist, try to download it
                         if (options.url) {

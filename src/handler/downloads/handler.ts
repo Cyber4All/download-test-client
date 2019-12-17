@@ -4,10 +4,8 @@ import 'source-map-support/register';
 import { MongoDB } from '../../drivers/database/mongodb/mongodb';
 import { OutageReportUpdates, OutageReport } from '../../types/outageReport';
 
-const DATABASE_URI = process.env.DATABASE_URI;
-
 export const testDownloads = async (): Promise<void> => {
-  const database = await MongoDB.connect(DATABASE_URI);
+  const database = await MongoDB.getInstance();
   const code = exec('npm test --outputFile=test-results.json');
 
   if (code !== '0') {

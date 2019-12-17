@@ -21,12 +21,13 @@ const options = {
 
 /**
  * Returns a download URI for a given learning object
- * @param param0 Contians the learning object to download and its author's username
+ * @param param0 Contains the learning object to download and its author's username
  */
 function getDownloadURI({ object, username }): string {
     if (object) {
         return `${ process.env.BASE_API_URL }/users/${ username }/learning-objects/${ object.cuid }/versions/${ object.version }/bundle`;
     } else {
+        // Returns undefined so the tests can pass if there isn't a object to test
         return undefined;
     }
 }

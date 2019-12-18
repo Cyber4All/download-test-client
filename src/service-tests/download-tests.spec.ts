@@ -42,7 +42,7 @@ function setOptions(uri: string, token: string): void {
     options.headers.Authorization = 'Bearer ' + token;
 }
 
-beforeAll(async () => {
+beforeAll(async done => {
     regToken = generateUserToken(regularUser);
     reviewerToken = generateUserToken(reviewerUser);
     curatorToken = generateUserToken(curatorUser);
@@ -59,6 +59,8 @@ beforeAll(async () => {
     URI['caeWaiting'] = getDownloadURI(await db.getObjectAndAuthUsername('waiting', 'cae_community'));
     URI['caeReview'] = getDownloadURI(await db.getObjectAndAuthUsername('review', 'cae_community'));
     URI['caeProofing'] = getDownloadURI(await db.getObjectAndAuthUsername('proofing', 'cae_community'));
+
+    done();
 });
 
 describe('When a Learning Object is downloaded', () => {

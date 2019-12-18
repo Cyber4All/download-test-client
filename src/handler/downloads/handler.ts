@@ -65,6 +65,3 @@ export const testDownloads = async (): Promise<void> => {
     }
   }
 };
-
-
-

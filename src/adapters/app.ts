@@ -1,6 +1,5 @@
 import { exec } from 'shelljs';
 import * as fs from 'fs';
-// import * as express from 'express';
 import { Request, Response } from 'express';
 
 const bodyParser = require('body-parser');

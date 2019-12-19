@@ -429,7 +429,8 @@ describe('When a Learning Object is downloaded', () => {
                 // If a learning object fitting the specified requirements exist, try to download it
                 if (options.url) {
                     request(options).on('response', (response) => {
-                        expect(response.statusCode).toBe(403);
+                        // @ts-ignore
+                        expect(response.statusCode).toBeStatusCode(403);
                         done();
                     });
                 } else {
@@ -440,7 +441,8 @@ describe('When a Learning Object is downloaded', () => {
             it('should return a status code of 200 when downloading released objects', done => {
                 setOptions(URI['released'], editorToken);
                 request(options).on('response', (response) => {
-                    expect(response.statusCode).toBe(200);
+                    // @ts-ignore
+                    expect(response.statusCode).toBeStatusCode(200);
                     done();
                 });
             });
@@ -451,7 +453,8 @@ describe('When a Learning Object is downloaded', () => {
                         // If a learning object fitting the specified requirements exist, try to download it
                         if (options.url) {
                             request(options).on('response', (response) => {
-                                expect(response.statusCode).toBe(200);
+                                // @ts-ignore
+                                expect(response.statusCode).toBeStatusCode(200);
                                 done();
                             });
                         } else {
@@ -464,7 +467,8 @@ describe('When a Learning Object is downloaded', () => {
                         // If a learning object fitting the specified requirements exist, try to download it
                         if (options.url) {
                             request(options).on('response', (response) => {
-                                expect(response.statusCode).toBe(200);
+                                // @ts-ignore
+                                expect(response.statusCode).toBeStatusCode(200);
                                 done();
                             });
                         } else {
@@ -479,7 +483,8 @@ describe('When a Learning Object is downloaded', () => {
                         // If a learning object fitting the specified requirements exist, try to download it
                         if (options.url) {
                             request(options).on('response', (response) => {
-                                expect(response.statusCode).toBe(200);
+                                // @ts-ignore
+                                expect(response.statusCode).toBeStatusCode(200);
                                 done();
                             });
                         } else {
@@ -492,7 +497,8 @@ describe('When a Learning Object is downloaded', () => {
                         // If a learning object fitting the specified requirements exist, try to download it
                         if (options.url) {
                             request(options).on('response', (response) => {
-                                expect(response.statusCode).toBe(200);
+                                // @ts-ignore
+                                expect(response.statusCode).toBeStatusCode(200);
                                 done();
                             });
                         } else {
@@ -507,7 +513,8 @@ describe('When a Learning Object is downloaded', () => {
                         // If a learning object fitting the specified requirements exist, try to download it
                         if (options.url) {
                             request(options).on('response', (response) => {
-                                expect(response.statusCode).toBe(200);
+                                // @ts-ignore
+                                expect(response.statusCode).toBeStatusCode(200);
                                 done();
                             });
                         } else {
@@ -520,7 +527,8 @@ describe('When a Learning Object is downloaded', () => {
                         // If a learning object fitting the specified requirements exist, try to download it
                         if (options.url) {
                             request(options).on('response', (response) => {
-                                expect(response.statusCode).toBe(200);
+                                // @ts-ignore
+                                expect(response.statusCode).toBeStatusCode(200);
                                 done();
                             });
                         } else {

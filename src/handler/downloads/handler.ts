@@ -6,7 +6,7 @@ import { OutageReportUpdates, OutageReport } from '../../types/outageReport';
 
 export const testDownloads = async (): Promise<void> => {
   const database = await MongoDB.getInstance();
-  const code = exec('npm test --outputFile=test-results.json');
+  const code = exec('npm test');
 
   if (code !== '0') {
     const contents = fs.readFileSync('test-results.json');
@@ -14,9 +14,9 @@ export const testDownloads = async (): Promise<void> => {
 
     // Format of test output file: https://jestjs.io/docs/en/configuration#testresultsprocessor-string
     let issues = [];
-    jsonContent.testResults.map(result => {
+    jsonContent.testResults[1].assertionResults.map(result => {
       if (result.status === 'failed') {
-        issues.push(result.title);
+        issues.push(result.fullName);
       }
     });
 

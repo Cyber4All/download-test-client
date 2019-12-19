@@ -23,23 +23,32 @@ function startServer() {
     const port = process.env.PORT || 4800;
 
     app.get('/downloads', (_req: Request, res: Response) => {
-        // res.status(200).send("Hello World!");
-        // exec('npm test --outputFile=test-results.json', (err, stdout, stderr) => {
-        //     if (err) {
-        //         res.status(500).send({});
-        //     } else {
-        //         const contents = fs.readFileSync('test-results.json');
-        //         const jsonContent = JSON.parse(contents.toString());
-        //         res.status(200).send(jsonContent); 
-        //     }
-        // });
-
         const code = exec('npm test');
         
         if (code !== '0') {
             const contents = fs.readFileSync('test-results.json');
             const jsonContent = JSON.parse(contents.toString());
-            res.status(200).send(jsonContent);
+            
+            const issues: string[] = [];
+            jsonContent.testResults[1].assertionResults.map(result => {
+                if (result.status === 'failed') {
+                  issues.push(result.fullName);
+                }
+            });
+
+            const accessGroups: string[] = [];
+            issues.map((i: string) => {
+                if (i.includes('admin') && !accessGroups.includes('admin')) {
+                    accessGroups.push('admin');
+                } else if (i.includes('editor') && !accessGroups.includes('editor')) {
+                    accessGroups.push('editor');
+                } else if (i.includes('curator') && !accessGroups.includes('curator')) {
+                    accessGroups.push('curator');
+                } else if (i.includes('reviewer') && !accessGroups.includes('reviewer')) {
+                    accessGroups.push('reviewer');
+                }
+            });
+            res.status(200).send({accessGroups, issues});
         } else {
             res.status(200).send(code);
         }

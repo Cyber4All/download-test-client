@@ -19,6 +19,30 @@ const options = {
     }
 };
 
+// Extend current expect functions to include a status code function
+expect.extend({
+    /**
+     * Checks if a recieved status code is equal to a expected status code. If it fails, the returned message includes the
+     * download URI that caused the failure.
+     * For more information on how to create a matcher, see: https://stackoverflow.com/questions/45348083/how-to-add-custom-message-to-jest-expect
+     * @param recieved The recieved status code
+     * @param expected The expected status code
+     */
+    toBeStatusCode(recieved: number, expected: number) {
+        if (recieved !== expected) {
+            return {
+                message: () => `Recieved incorrect status code. Recieved ${recieved}, expected ${expected} for download URI:\n${options.url}`,
+                pass: false
+            };
+        } else {
+            return {
+                message: () => `Recieved correct status code. Recieved ${recieved}, expected ${expected}`,
+                pass: true
+            };
+        }
+    }
+});
+
 /**
  * Returns a download URI for a given learning object
  * @param param0 Contains the learning object to download and its author's username
@@ -191,7 +215,7 @@ describe('When a Learning Object is downloaded', () => {
         });
     });
     describe('and the requester has privileges', () => {
-        describe('and the requester has Reviewer privileges', () => {
+        describe('and the requester has reviewer privileges', () => {
             it('should return a status code of 403 when downloading unreleased objects', done => {
                 setOptions(URI['unreleased'], reviewerToken);
                 // If a learning object fitting the specified requirements exist, try to download it
@@ -295,7 +319,7 @@ describe('When a Learning Object is downloaded', () => {
                 });
             });
         });
-        describe('and the requester has Curator privileges', () => {
+        describe('and the requester has curator privileges', () => {
             it('should return a status code of 403 when downloading unreleased objects', done => {
                 setOptions(URI['unreleased'], curatorToken);
                 // If a learning object fitting the specified requirements exist, try to download it
@@ -399,7 +423,7 @@ describe('When a Learning Object is downloaded', () => {
                 });
             });
         });
-        describe('and the requester has Editor privileges', () => {
+        describe('and the requester has editor privileges', () => {
             it('should return a status code of 403 when downloading unreleased objects', done => {
                 setOptions(URI['unreleased'], editorToken);
                 // If a learning object fitting the specified requirements exist, try to download it
@@ -507,13 +531,14 @@ describe('When a Learning Object is downloaded', () => {
                 });
             });
         });
-        describe('and the requester has Admin privileges', () => {
+        describe('and the requester has admin privileges', () => {
             it('should return a status code of 403 when downloading unreleased objects', done => {
                 setOptions(URI['unreleased'], adminToken);
                 // If a learning object fitting the specified requirements exist, try to download it
                 if (options.url) {
                     request(options).on('response', (response) => {
-                        expect(response.statusCode).toBe(403);
+                        // @ts-ignore
+                        expect(response.statusCode).toBeStatusCode(403);
                         done();
                     });
                 } else {
@@ -524,7 +549,8 @@ describe('When a Learning Object is downloaded', () => {
             it('should return a status code of 200 when downloading released objects', done => {
                 setOptions(URI['released'], adminToken);
                 request(options).on('response', (response) => {
-                    expect(response.statusCode).toBe(200);
+                    // @ts-ignore
+                    expect(response.statusCode).toBeStatusCode(200);
                     done();
                 });
             });
@@ -535,7 +561,8 @@ describe('When a Learning Object is downloaded', () => {
                         // If a learning object fitting the specified requirements exist, try to download it
                         if (options.url) {
                             request(options).on('response', (response) => {
-                                expect(response.statusCode).toBe(200);
+                                // @ts-ignore
+                                expect(response.statusCode).toBeStatusCode(200);
                                 done();
                             });
                         } else {
@@ -548,7 +575,8 @@ describe('When a Learning Object is downloaded', () => {
                         // If a learning object fitting the specified requirements exist, try to download it
                         if (options.url) {
                             request(options).on('response', (response) => {
-                                expect(response.statusCode).toBe(200);
+                                // @ts-ignore
+                                expect(response.statusCode).toBeStatusCode(200);
                                 done();
                             });
                         } else {
@@ -563,7 +591,8 @@ describe('When a Learning Object is downloaded', () => {
                         // If a learning object fitting the specified requirements exist, try to download it
                         if (options.url) {
                             request(options).on('response', (response) => {
-                                expect(response.statusCode).toBe(200);
+                                // @ts-ignore
+                                expect(response.statusCode).toBeStatusCode(200);
                                 done();
                             });
                         } else {
@@ -576,7 +605,8 @@ describe('When a Learning Object is downloaded', () => {
                         // If a learning object fitting the specified requirements exist, try to download it
                         if (options.url) {
                             request(options).on('response', (response) => {
-                                expect(response.statusCode).toBe(200);
+                                // @ts-ignore
+                                expect(response.statusCode).toBeStatusCode(200);
                                 done();
                             });
                         } else {
@@ -591,7 +621,8 @@ describe('When a Learning Object is downloaded', () => {
                         // If a learning object fitting the specified requirements exist, try to download it
                         if (options.url) {
                             request(options).on('response', (response) => {
-                                expect(response.statusCode).toBe(200);
+                                // @ts-ignore
+                                expect(response.statusCode).toBeStatusCode(200);
                                 done();
                             });
                         } else {
@@ -604,7 +635,8 @@ describe('When a Learning Object is downloaded', () => {
                         // If a learning object fitting the specified requirements exist, try to download it
                         if (options.url) {
                             request(options).on('response', (response) => {
-                                expect(response.statusCode).toBe(200);
+                                // @ts-ignore
+                                expect(response.statusCode).toBeStatusCode(200);
                                 done();
                             });
                         } else {

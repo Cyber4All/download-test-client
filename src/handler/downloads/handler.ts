@@ -64,7 +64,7 @@ export const testDownloads = async (): Promise<void> => {
         name: 'downloads',
         accessGroups,
         issues,
-        discovered: Date.now().toString(),
+        discovered: new Date(),
       };
       // Dynamically set links since it is optional in mongo
       if (links) {
@@ -78,7 +78,7 @@ export const testDownloads = async (): Promise<void> => {
     // check if there is an open issue, if so resolve it
     const activeDownloadsIssue = await database.getActiveIssue('downloads');
     if (activeDownloadsIssue) {
-      await database.updateActiveIssue({ resolved: true }, 'downloads');
+      await database.updateActiveIssue({ resolved: new Date() }, 'downloads');
     }
   }
 

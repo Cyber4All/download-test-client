@@ -39,18 +39,35 @@ export class MongoDB {
         this.onionDb = mongodbClient.db('onion');
     }
 
-    async getActiveIssue() {
-        return await this.utilityDb.collection('platform-outage-reports').findOne({ name: 'downloads', resolved: null });
+    /**
+     * Gets the current active issue in the system
+     * @param name The type of report ('downloads', 'search', 'uploads')
+     */
+    async getActiveIssue(name: string) {
+        return await this.utilityDb.collection('platform-outage-reports').findOne({ name, resolved: null });
     }
 
+    /**
+     * Creates a new active issue in the system
+     * @param outageReport The outage report to create
+     */
     async createNewIssue(outageReport: OutageReport) {
         await this.utilityDb.collection('platform-outage-reports').insertOne(outageReport);
     }
 
-    async updateActiveIssue(updates: OutageReportUpdates) {
-        await this.utilityDb.collection('platform-outage-reports').updateOne({ name: 'downloads', resolved: null }, { $set: { updates }});
+    /**
+     * Updates an active issue with new information
+     * @param updates The updates to the report
+     * @param name The type of report ('downloads', 'search', 'uploads')
+     */
+    async updateActiveIssue(updates: OutageReportUpdates, name: string) {
+        await this.utilityDb.collection('platform-outage-reports').updateOne({ name, resolved: null }, { $set: { updates }});
     }
 
+    /**
+     * Gets a author's username given the ID of the author
+     * @param authorID The ID of the author of a learning object
+     */
     private async getAuthorUsername(authorID: string) {
         const user = await this.onionDb.collection('users').findOne({ _id: authorID });
         return user.username;

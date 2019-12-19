@@ -3,11 +3,13 @@ export interface OutageReport {
     accessGroups: string[];
     issues: string[];
     discovered: string;
-    resolved?: string;
+    links?: string[];
+    resolved?: boolean;
 }
 
 export interface OutageReportUpdates {
     accessGroups?: string[];
     issues?: string[];
+    links?: string[];
     resolved?: boolean;
 }

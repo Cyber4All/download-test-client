@@ -61,7 +61,15 @@ export class MongoDB {
      * @param name The type of report ('downloads', 'search', 'uploads')
      */
     async updateActiveIssue(updates: OutageReportUpdates, name: string) {
-        await this.utilityDb.collection('platform-outage-reports').updateOne({ name, resolved: null }, { $set: { updates }});
+        await this.utilityDb.collection('platform-outage-reports').updateOne({ name, resolved: null },
+            {
+                $set: {
+                    accessGroups: updates.accessGroups,
+                    issues: updates.issues,
+                    links: updates.links,
+                    resolved: updates.resolved
+                }
+            });
     }
 
     /**

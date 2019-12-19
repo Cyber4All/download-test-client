@@ -30,9 +30,15 @@ function startServer() {
             const jsonContent = JSON.parse(contents.toString());
             
             const issues: string[] = [];
+            const links: string[] = [];
             jsonContent.testResults[1].assertionResults.map(result => {
                 if (result.status === 'failed') {
-                  issues.push(result.fullName);
+                    issues.push(result.fullName);
+                    
+                    const link: string = parseDownloadLink(result.failureMessages[0]);
+                    if (link && !links.includes(link)) {
+                        links.push(link);
+                    }
                 }
             });
 
@@ -48,11 +54,25 @@ function startServer() {
                     accessGroups.push('reviewer');
                 }
             });
-            res.status(200).send({accessGroups, issues});
+            res.status(200).send({accessGroups, issues, links});
         } else {
             res.status(200).send(code);
         }
     });
+
+    /**
+     * Returns a download link that is parsed from a jest error message if it exists
+     * @param message The error message to parse
+     */
+    function parseDownloadLink(message: String) {
+        const start = message.indexOf('http');
+        if (start) {
+            const end = message.indexOf('/bundle') + 7;
+            return message.substring(start, end);
+        } else {
+            return undefined;
+        }
+    }
 
     app.listen(port, () => {
         console.log(`Server is running on port ${port}`);

@@ -36,7 +36,7 @@ expect.extend({
             };
         } else {
             return {
-                message: () => `Recieved correct status code. Recieved ${recieved}, expected ${expected}`,
+                message: () => `Recieved correct status code. Recieved ${recieved}, expected ${expected} for download URI:\n${options.url}`,
                 pass: true
             };
         }

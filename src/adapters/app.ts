@@ -1,6 +1,9 @@
 import { exec } from 'shelljs';
 import * as fs from 'fs';
 import { Request, Response } from 'express';
+import { MongoDB } from '../drivers/database/mongodb/mongodb';
+import { OutageReportUpdates, OutageReport } from '../types/outageReport';
+import * as dotenv from 'dotenv';
 
 const bodyParser = require('body-parser');
 const express = require('express');
@@ -8,6 +11,7 @@ const express = require('express');
 startServer();
 
 function startServer() {
+    dotenv.config(); // TODO move this to a higher up file
     const app = express();
     
     app.use(bodyParser.urlencoded({ extended: true }));
@@ -21,7 +25,8 @@ function startServer() {
     
     const port = process.env.PORT || 4800;
 
-    app.get('/downloads', (_req: Request, res: Response) => {
+    app.get('/downloads', async (_req: Request, res: Response) => {
+        const database = await MongoDB.getInstance();
         const code = exec('npm test');
         
         if (code !== '0') {
@@ -53,10 +58,48 @@ function startServer() {
                     accessGroups.push('reviewer');
                 }
             });
-            res.status(200).send({accessGroups, issues, links});
+
+
+            const activeDownloadsIssue = await database.getActiveIssue('downloads');
+            if (activeDownloadsIssue) {
+
+            // If the issue or severity has changed, update the existing issue
+            if (accessGroups !== activeDownloadsIssue.accessGroups
+                || issues !== activeDownloadsIssue.issues || links !== activeDownloadsIssue.links) {
+                    const updates: OutageReportUpdates = { accessGroups, issues };
+                    // Dynamically set links since it is optional in mongo
+                    if (links) {
+                        updates['links'] = links;
+                    }
+
+                    await database.updateActiveIssue(updates, 'downloads');
+            }
+            } else {
+                // If there is not an active issue, create a new one
+                const outageReport: OutageReport = {
+                    name: 'downloads',
+                    accessGroups,
+                    issues,
+                    discovered: new Date(),
+                };
+                // Dynamically set links since it is optional in mongo
+                if (links) {
+                    outageReport['links'] = links;
+                }
+
+                await database.createNewIssue(outageReport);
+            }
         } else {
-            res.status(200).send(code);
+            // Tests passed!
+            // check if there is an open issue, if so resolve it
+            const activeDownloadsIssue = await database.getActiveIssue('downloads');
+            if (activeDownloadsIssue) {
+                await database.updateActiveIssue({ resolved: new Date() }, 'downloads');
+            }
         }
+
+        const issue = await database.getActiveIssue('downloads');
+        res.status(200).send(issue);
     });
 
     /**

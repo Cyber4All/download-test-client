@@ -1,10 +1,7 @@
 const request = require('request');
-import * as dotenv from 'dotenv';
 import { generateUserToken } from '../drivers/jwt/tokenManager';
 import { regularUser, reviewerUser, curatorUser, editorUser, adminUser } from '../users';
 import { MongoDB } from '../drivers/database/mongodb/mongodb';
-
-dotenv.config(); // TODO move this to a higher up file
 
 let db: MongoDB;
 

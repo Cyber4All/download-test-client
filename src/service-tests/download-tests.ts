@@ -67,24 +67,44 @@ function setOptions(uri: string, token: string): void {
     options.headers.Authorization = 'Bearer ' + token;
 }
 
-function checkStatusCode(callback: Function, code: number, group: string, test: string) {
+/**
+ * Helper function that returns the functions object needed in the check status code function
+ * @param callback The function callback
+ * @param afterAll The afterAll function
+ */
+function setFunctions(callback: Function, afterAll: Function) {
+    return { callback, afterAll };
+}
+
+/**
+ * Dynamically goes through each callback to see if downloads work for each specified case
+ * @param functions The next function to call
+ * @param code The code to expect
+ * @param group The access group
+ * @param test The test
+ */
+function checkStatusCode(functions: { callback: Function, afterAll: Function }, code: number, group: string, test: string) {
     if (options.url) {
         request(options).on('response', (response) => {
             if (response.statusCode !== code) {
                 console.error(`ERROR: Recieved status code ${response.statusCode}, expected ${code}.`);
                 updateReport({ group, test });
             }
-            callback(report);
+            invokeCallback(functions);
         }).on('error', (error) => {
             console.error(`ERROR: Recieved error message: `, error);
             updateReport({ group, test });
-            callback(report);
+            invokeCallback(functions);
         });
     } else {
-        callback(report);
+        invokeCallback(functions);
     }
 }
 
+/**
+ * Updates the final report
+ * @param params The access group and test
+ */
 function updateReport(params: { group: string, test: string }) {
     const { group, test } = params;
 
@@ -102,6 +122,18 @@ function updateReport(params: { group: string, test: string }) {
     }
 }
 
+/**
+ * Invokes either the callback or afterAll function depending on if the callback is undefined
+ * @param functions The callback and afterAll functions
+ */
+function invokeCallback(functions: { callback: Function, afterAll: Function }) {
+    if (functions.callback) {
+        functions.callback();
+    } else {
+        functions.afterAll(report);
+    }
+}
+
 // When a Learning Object is downloaded
 export async function testDownloads(afterAll: Function) {
     await beforeAll();
@@ -116,13 +148,15 @@ export async function testDownloads(afterAll: Function) {
         // should return a status code of 401 when downloading unreleased objects
         function unreleased() {
             setOptions(URI['unreleased'], '');
-            checkStatusCode(released, 401, '', 'Should return a status code of 401 when downloading unreleased objects as a unauthorized user');
+            const functions = setFunctions(released, afterAll);
+            checkStatusCode(functions, 401, '', 'Should return a status code of 401 when downloading unreleased objects as a unauthorized user');
         }
 
         // should return a status code of 401 when downloading released objects
         function released() {
             setOptions(URI['released'], '');
-            checkStatusCode(afterAll, 401, '', 'Should return a status code of 401 when downloading released objects as a unauthorized user');
+            const functions = setFunctions(undefined, afterAll);
+            checkStatusCode(functions, 401, '', 'Should return a status code of 401 when downloading released objects as a unauthorized user');
         }
     }
 }

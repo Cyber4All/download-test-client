@@ -1,7 +1,9 @@
 import { Request, Response } from 'express';
 import { MongoDB } from '../drivers/database/mongodb/mongodb';
 import * as dotenv from 'dotenv';
-import { testDownloads } from '../handler/downloads/handler';
+// import { testDownloads } from '../service-tests/download-tests';
+// import { OutageReport, OutageReportUpdates } from '../types/outageReport';
+import { handler } from '../handler/downloads/handler';
 
 const bodyParser = require('body-parser');
 const express = require('express');
@@ -25,8 +27,7 @@ function startServer() {
 
     app.get('/downloads', async (_req: Request, res: Response) => {
         const database = await MongoDB.getInstance();
-        await testDownloads();
-
+        await handler();
         const issue = await database.getActiveIssue('downloads');
         res.status(200).send(issue);
     });

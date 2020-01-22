@@ -27,9 +27,11 @@ function startServer() {
 
     app.get('/downloads', async (_req: Request, res: Response) => {
         const database = await MongoDB.getInstance();
-        await handler();
-        const issue = await database.getActiveIssue('downloads');
-        res.status(200).send(issue);
+        await handler(undefined, undefined, async () => {
+            console.log("DONE!");
+            const issue = await database.getActiveIssue('downloads');
+            res.status(200).send(issue);
+        });
     });
 
     app.listen(port, () => {

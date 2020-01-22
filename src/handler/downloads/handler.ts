@@ -3,7 +3,8 @@ import { MongoDB } from '../../drivers/database/mongodb/mongodb';
 import { OutageReportUpdates, OutageReport } from '../../types/outageReport';
 import { testDownloads } from '../../service-tests/download-tests';
 
-export const handler = async (): Promise<void> => {
+// @ts-ignore
+export const handler = async (event, context, callback): Promise<void> => {
 
   const database = await MongoDB.getInstance();
 
@@ -29,5 +30,7 @@ export const handler = async (): Promise<void> => {
     } else { // If a old report needs to be resolved...
         await database.updateActiveIssue({ resolved: new Date() }, 'downloads');
     }
+
+    callback();
   });
 }

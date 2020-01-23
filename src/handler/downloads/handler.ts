@@ -1,14 +1,13 @@
-import 'source-map-support/register';
 import { MongoDB } from '../../drivers/database/mongodb/mongodb';
 import { OutageReportUpdates, OutageReport } from '../../types/outageReport';
 import { testDownloads } from '../../service-tests/download-tests';
 
-// @ts-ignore
+//@ts-ignore
 export const handler = async (event, context, callback): Promise<void> => {
-
   const database = await MongoDB.getInstance();
 
-  await testDownloads(async (report: OutageReport) => {
+  // https://stackoverflow.com/questions/40445087/converting-aws-lambda-function-to-use-promises/40449597
+  const promise = testDownloads(async (report: OutageReport) => {
     // Get active report
     const activeIssue = await database.getActiveIssue('downloads');
     
@@ -31,6 +30,7 @@ export const handler = async (event, context, callback): Promise<void> => {
         await database.updateActiveIssue({ resolved: new Date() }, 'downloads');
     }
 
-    callback();
+    // callback();
   });
+  return promise;
 }

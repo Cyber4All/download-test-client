@@ -79,21 +79,25 @@ function setOptions(uri: string, token: string): void {
  * @param group The access group
  * @param test The test
  */
-function checkStatusCode(callback: Function, code: number, group: string, test: string) {
+async function checkStatusCode(callback: Function, code: number, group: string, test: string) {
     if (options.url) {
-        request(options).on('response', (response) => {
-            if (response.statusCode !== code) {
-                console.error(`ERROR: Recieved status code ${response.statusCode}, expected ${code}.`);
+        await new Promise((resolve, reject) => {
+            request(options).on('response', async (response) => {
+                if (response.statusCode !== code) {
+                    console.error(`ERROR: Recieved status code ${response.statusCode}, expected ${code}.`);
+                    updateReport({ group, test });
+                }
+                await invokeCallback(callback);
+                resolve();
+            }).on('error', async (error) => {
+                console.error(`ERROR: Recieved error message: `, error);
                 updateReport({ group, test });
-            }
-            invokeCallback(callback);
-        }).on('error', (error) => {
-            console.error(`ERROR: Recieved error message: `, error);
-            updateReport({ group, test });
-            invokeCallback(callback);
+                await invokeCallback(callback);
+                reject();
+            });
         });
     } else {
-        invokeCallback(callback);
+        await invokeCallback(callback);
     }
 }
 
@@ -122,54 +126,59 @@ function updateReport(params: { group: string, test: string }) {
  * Invokes either the callback or afterAll function depending on if the callback is undefined
  * @param callback The next function to call, if exists
  */
-function invokeCallback(callback: Function) {
+async function invokeCallback(callback: Function) {
     if (callback) {
-        callback();
+        await callback();
     } else {
-        afterAll(report);
+        await afterAll(report);
     }
 }
 
 // When a Learning Object is downloaded
-export async function testDownloads(callback) {
+export async function testDownloads(callback: Function) {
     afterAll = callback;
     await beforeAll();
 
-    unauthorizedUserTests();
+    await unauthorizedUserTests();
 
     // and the requester is unauthorized
-    function unauthorizedUserTests() {
+    async function unauthorizedUserTests() {
         
-        unreleased();
+        await unreleased();
 
         // should return a status code of 401 when downloading unreleased objects
-        function unreleased() {
+        async function unreleased() {
+            console.log("\nLOG: Unreleased");
             setOptions(URI['unreleased'], '');
-            checkStatusCode(released, 401, '', 'Should return a status code of 401 when downloading unreleased objects as a unauthorized user');
+            await checkStatusCode(released, 401, '', 'Should return a status code of 401 when downloading unreleased objects as a unauthorized user');
         }
 
         // should return a status code of 401 when downloading released objects
-        function released() {
+        async function released() {
+            console.log("LOG: Released");
             setOptions(URI['released'], '');
-            checkStatusCode(waiting, 401, '', 'Should return a status code of 401 when downloading released objects as a unauthorized user');
+            await checkStatusCode(waiting, 401, '', 'Should return a status code of 401 when downloading released objects as a unauthorized user');
         }
 
         // should return a status code of 401 when downloading waiting objects
-        function waiting() {
+        async function waiting() {
+            console.log("LOG: Waiting");
             setOptions(URI['waiting'], '');
-            checkStatusCode(review, 401, '', 'Should return a status code of 401 when downloading waiting objects as a unauthorized user');
+            await checkStatusCode(review, 401, '', 'Should return a status code of 401 when downloading waiting objects as a unauthorized user');
         }
 
         // should return a status code of 401 when downloading in review objects
-        function review() {
+        async function review() {
+            console.log("LOG: Review");
             setOptions(URI['review'], '');
-            checkStatusCode(proofing, 401, '', 'Should return a status code of 401 when downloading in review objects as a unauthorized user');
+            await checkStatusCode(proofing, 401, '', 'Should return a status code of 401 when downloading in review objects as a unauthorized user');
         }
 
         // should return a status code of 401 when downloading proofing objects
-        function proofing() {
+        async function proofing() {
+            console.log("LOG: Proofing");
             setOptions(URI['proofing'], '');
-            checkStatusCode(undefined, 401, '', 'Should return a status code of 401 when downloading proofing objects as a unauthorized user');
+            await checkStatusCode(undefined, 401, '', 'Should return a status code of 401 when downloading proofing objects as a unauthorized user');
         }
     }
 }

@@ -148,35 +148,30 @@ export async function testDownloads(callback: Function) {
 
         // should return a status code of 401 when downloading unreleased objects
         async function unreleased() {
-            console.log("\nLOG: Unreleased");
             setOptions(URI['unreleased'], '');
             await checkStatusCode(released, 401, '', 'Should return a status code of 401 when downloading unreleased objects as a unauthorized user');
         }
 
         // should return a status code of 401 when downloading released objects
         async function released() {
-            console.log("LOG: Released");
             setOptions(URI['released'], '');
             await checkStatusCode(waiting, 401, '', 'Should return a status code of 401 when downloading released objects as a unauthorized user');
         }
 
         // should return a status code of 401 when downloading waiting objects
         async function waiting() {
-            console.log("LOG: Waiting");
             setOptions(URI['waiting'], '');
             await checkStatusCode(review, 401, '', 'Should return a status code of 401 when downloading waiting objects as a unauthorized user');
         }
 
         // should return a status code of 401 when downloading in review objects
         async function review() {
-            console.log("LOG: Review");
             setOptions(URI['review'], '');
             await checkStatusCode(proofing, 401, '', 'Should return a status code of 401 when downloading in review objects as a unauthorized user');
         }
 
         // should return a status code of 401 when downloading proofing objects
         async function proofing() {
-            console.log("LOG: Proofing");
             setOptions(URI['proofing'], '');
             await checkStatusCode(undefined, 401, '', 'Should return a status code of 401 when downloading proofing objects as a unauthorized user');
         }

@@ -1,12 +1,13 @@
 const request = require('request');
-// import { generateUserToken } from '../drivers/jwt/tokenManager';
-// import { regularUser, reviewerUser, curatorUser, editorUser, adminUser } from '../users';
+import { generateUserToken } from '../drivers/jwt/tokenManager';
+import { regularUser, reviewerUser, curatorUser, editorUser, adminUser } from '../users';
 import { MongoDB } from '../drivers/database/mongodb/mongodb';
 import { OutageReport } from '../types/outageReport';
 
 let db: MongoDB;
 
-// let regToken: string, reviewerToken: string, curatorToken: string, editorToken: string, adminToken: string;
+// @ts-ignore
+let regToken: string, reviewerToken: string, curatorToken: string, editorToken: string, adminToken: string;
 const URI = {};
 
 const options = {
@@ -29,11 +30,11 @@ let report: OutageReport = {
  * Sets up the download URIs and user tokens
  */
 async function beforeAll() {
-    // regToken = generateUserToken(regularUser);
-    // reviewerToken = generateUserToken(reviewerUser);
-    // curatorToken = generateUserToken(curatorUser);
-    // editorToken = generateUserToken(editorUser);
-    // adminToken = generateUserToken(adminUser);
+    regToken = generateUserToken(regularUser);
+    reviewerToken = generateUserToken(reviewerUser);
+    curatorToken = generateUserToken(curatorUser);
+    editorToken = generateUserToken(editorUser);
+    adminToken = generateUserToken(adminUser);
 
     db = await MongoDB.getInstance();
     URI['released'] = getDownloadURI(await db.getObjectAndAuthUsername('released'));
@@ -173,7 +174,43 @@ export async function testDownloads(callback: Function) {
         // should return a status code of 401 when downloading proofing objects
         async function proofing() {
             setOptions(URI['proofing'], '');
-            await checkStatusCode(undefined, 401, '', 'Should return a status code of 401 when downloading proofing objects as a unauthorized user');
+            await checkStatusCode(regularUserTests, 401, '', 'Should return a status code of 401 when downloading proofing objects as a unauthorized user');
+        }
+    }
+
+    // and the requester has no privileges
+    async function regularUserTests() {
+        
+        await unreleased();
+
+        // should return a status code of 403 when downloading unreleased objects
+        async function unreleased() {
+            setOptions(URI['unreleased'], regToken);
+            await checkStatusCode(released, 403, '', 'Should return a status code of 403 when downloading unreleased objects as a regular user');
+        }
+
+        // should return a status code of 200 when downloading released objects
+        async function released() {
+            setOptions(URI['released'], regToken);
+            await checkStatusCode(waiting, 200, '', 'Should return a status code of 200 when downloading released objects as a regular user');
+        }
+
+        // should return a status code of 403 when downloading waiting objects
+        async function waiting() {
+            setOptions(URI['waiting'], regToken);
+            await checkStatusCode(review, 403, '', 'Should return a status code of 403 when downloading waiting objects as a regular user');
+        }
+
+        // should return a status code of 403 when downloading in review objects
+        async function review() {
+            setOptions(URI['review'], regToken);
+            await checkStatusCode(proofing, 403, '', 'Should return a status code of 403 when downloading in review objects as a regular user');
+        }
+
+        // should return a status code of 403 when downloading proofing objects
+        async function proofing() {
+            setOptions(URI['proofing'], regToken);
+            await checkStatusCode(undefined, 403, '', 'Should return a status code of 403 when downloading proofing objects as a regular user');
         }
     }
 }

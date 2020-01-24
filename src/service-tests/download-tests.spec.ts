@@ -2,6 +2,7 @@ const request = require('request');
 import { generateUserToken } from '../drivers/jwt/tokenManager';
 import { regularUser, reviewerUser, curatorUser, editorUser, adminUser } from '../users';
 import { MongoDB } from '../drivers/database/mongodb/mongodb';
+// import * as dotenv from 'dotenv';
 
 let db: MongoDB;
 
@@ -64,6 +65,9 @@ function setOptions(uri: string, token: string): void {
 }
 
 beforeAll(async done => {
+
+    // dotenv.config(); // TODO move this to a higher up file
+
     regToken = generateUserToken(regularUser);
     reviewerToken = generateUserToken(reviewerUser);
     curatorToken = generateUserToken(curatorUser);

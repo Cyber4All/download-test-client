@@ -346,7 +346,76 @@ export async function testDownloads(callback: Function) {
             // should return a status code of 403 when downloading proofing objects outside their collection
             async function caeCollection() {
                 setOptions(URI['caeProofing'], curatorToken);
-                await checkStatusCode(undefined, 403, 'curator', 'Should return a status code of 403 when downloading proofing objects as a curator outside their collection');
+                await checkStatusCode(editorUserTests, 403, 'curator', 'Should return a status code of 403 when downloading proofing objects as a curator outside their collection');
+            }
+        }
+    }
+
+    // and the requester has editor privileges
+    async function editorUserTests() {
+
+        await unreleased();
+
+        // should return a status code of 403 when downloading unreleased objects
+        async function unreleased() {
+            setOptions(URI['unreleased'], editorToken);
+            await checkStatusCode(released, 403, 'editor', 'Should return a status code of 403 when downloading unreleased objects as a editor');
+        }
+
+        // should return a status code of 200 when downloading released objects
+        async function released() {
+            setOptions(URI['released'], editorToken);
+            await checkStatusCode(waiting, 200, 'editor', 'Should return a status code of 200 when downloading released objects as a editor');
+        }
+
+        async function waiting() {
+
+            await nccpCollection();
+
+            // should return a status code of 200 when downloading waiting objects from one collection
+            async function nccpCollection() {
+                setOptions(URI['waiting'], editorToken);
+                await checkStatusCode(caeCollection, 200, 'editor', 'Should return a status code of 200 when downloading waiting objects as a editor in one collection');
+            }
+
+            // should return a status code of 200 when downloading waiting objects from another collection
+            async function caeCollection() {
+                setOptions(URI['caeWaiting'], editorToken);
+                await checkStatusCode(review, 200, 'editor', 'Should return a status code of 200 when downloading waiting objects as a editor in another collection');
+            }
+        }
+
+        async function review() {
+
+            await nccpCollection();
+
+            // should return a status code of 200 when downloading in review objects from one collection
+            async function nccpCollection() {
+                setOptions(URI['review'], editorToken);
+                await checkStatusCode(caeCollection, 200, 'editor', 'Should return a status code of 200 when downloading in review objects as a editor in one collection');
+            }
+
+            // should return a status code of 200 when downloading in review objects from another collection
+            async function caeCollection() {
+                setOptions(URI['caeReview'], editorToken);
+                await checkStatusCode(proofing, 200, 'editor', 'Should return a status code of 200 when downloading in review objects as a editor in another collection');
+            }
+        }
+
+        async function proofing() {
+
+            await nccpCollection();
+
+            // should return a status code of 200 when downloading proofing objects from one collection
+            async function nccpCollection() {
+                setOptions(URI['proofing'], editorToken);
+                await checkStatusCode(caeCollection, 200, 'editor', 'Should return a status code of 200 when downloading proofing objects as a editor in one collection');
+            }
+
+            // should return a status code of 200 when downloading proofing objects from another collection
+            async function caeCollection() {
+                setOptions(URI['caeProofing'], editorToken);
+                await checkStatusCode(undefined, 200, 'editor', 'Should return a status code of 200 when downloading proofing objects as a editor in another collection');
             }
         }
     }

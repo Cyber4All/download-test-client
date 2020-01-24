@@ -210,7 +210,76 @@ export async function testDownloads(callback: Function) {
         // should return a status code of 403 when downloading proofing objects
         async function proofing() {
             setOptions(URI['proofing'], regToken);
-            await checkStatusCode(undefined, 403, '', 'Should return a status code of 403 when downloading proofing objects as a regular user');
+            await checkStatusCode(reviewerUserTests, 403, '', 'Should return a status code of 403 when downloading proofing objects as a regular user');
+        }
+    }
+
+    // and the requester has reviewer privileges
+    async function reviewerUserTests() {
+        
+        await unreleased();
+
+        // should return a status code of 403 when downloading unreleased objects
+        async function unreleased() {
+            setOptions(URI['unreleased'], reviewerToken);
+            await checkStatusCode(released, 403, 'reviewer', 'Should return a status code of 403 when downloading unreleased objects as a reviewer');
+        }
+
+        // should return a status code of 200 when downloading released objects
+        async function released() {
+            setOptions(URI['released'], reviewerToken);
+            await checkStatusCode(waiting, 200, 'reviewer', 'Should return a status code of 200 when downloading released objects as a reviewer');
+        }
+
+        async function waiting() {
+
+            await nccpCollection();
+
+            // should return a status code of 200 when downloading waiting objects in their collection
+            async function nccpCollection() {
+                setOptions(URI['waiting'], reviewerToken);
+                await checkStatusCode(caeCollection, 200, 'reviewer', 'Should return a status code of 200 when downloading waiting objects as a reviewer in their collection');
+            }
+
+            // should return a status code of 403 when downloading waiting objects outside their collection
+            async function caeCollection() {
+                setOptions(URI['caeWaiting'], reviewerToken);
+                await checkStatusCode(review, 403, 'reviewer', 'Should return a status code of 403 when downloading waiting objects as a reviewer outside their collection');
+            }
+        }
+
+        async function review() {
+
+            await nccpCollection();
+
+            // should return a status code of 200 when downloading in review objects in their collection
+            async function nccpCollection() {
+                setOptions(URI['review'], reviewerToken);
+                await checkStatusCode(caeCollection, 200, 'reviewer', 'Should return a status code of 200 when downloading in review objects as a reviewer in their collection');
+            }
+
+            // should return a status code of 403 when downloading in review objects outside their collection
+            async function caeCollection() {
+                setOptions(URI['caeReview'], reviewerToken);
+                await checkStatusCode(proofing, 403, 'reviewer', 'Should return a status code of 403 when downloading in review objects as a reviewer outside their collection');
+            }
+        }
+
+        async function proofing() {
+
+            await nccpCollection();
+
+            // should return a status code of 200 when downloading proofing objects in their collection
+            async function nccpCollection() {
+                setOptions(URI['proofing'], reviewerToken);
+                await checkStatusCode(caeCollection, 200, 'reviewer', 'Should return a status code of 200 when downloading proofing objects as a reviewer in their collection');
+            }
+
+            // should return a status code of 403 when downloading proofing objects outside their collection
+            async function caeCollection() {
+                setOptions(URI['caeProofing'], reviewerToken);
+                await checkStatusCode(undefined, 403, 'reviewer', 'Should return a status code of 403 when downloading proofing objects as a reviewer outside their collection');
+            }
         }
     }
 }

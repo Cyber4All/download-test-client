@@ -415,7 +415,76 @@ export async function testDownloads(callback: Function) {
             // should return a status code of 200 when downloading proofing objects from another collection
             async function caeCollection() {
                 setOptions(URI['caeProofing'], editorToken);
-                await checkStatusCode(undefined, 200, 'editor', 'Should return a status code of 200 when downloading proofing objects as a editor in another collection');
+                await checkStatusCode(adminUserTests, 200, 'editor', 'Should return a status code of 200 when downloading proofing objects as a editor in another collection');
+            }
+        }
+    }
+
+    // and the requester has admin privileges
+    async function adminUserTests() {
+
+        await unreleased();
+
+        // should return a status code of 403 when downloading unreleased objects
+        async function unreleased() {
+            setOptions(URI['unreleased'], adminToken);
+            await checkStatusCode(released, 403, 'admin', 'Should return a status code of 403 when downloading unreleased objects as a admin');
+        }
+
+        // should return a status code of 200 when downloading released objects
+        async function released() {
+            setOptions(URI['released'], adminToken);
+            await checkStatusCode(waiting, 200, 'admin', 'Should return a status code of 200 when downloading released objects as a admin');
+        }
+
+        async function waiting() {
+
+            await nccpCollection();
+
+            // should return a status code of 200 when downloading waiting objects from one collection
+            async function nccpCollection() {
+                setOptions(URI['waiting'], adminToken);
+                await checkStatusCode(caeCollection, 200, 'admin', 'Should return a status code of 200 when downloading waiting objects as a admin in one collection');
+            }
+
+            // should return a status code of 200 when downloading waiting objects from another collection
+            async function caeCollection() {
+                setOptions(URI['caeWaiting'], adminToken);
+                await checkStatusCode(review, 200, 'admin', 'Should return a status code of 200 when downloading waiting objects as a admin in another collection');
+            }
+        }
+
+        async function review() {
+
+            await nccpCollection();
+
+            // should return a status code of 200 when downloading in review objects from one collection
+            async function nccpCollection() {
+                setOptions(URI['review'], adminToken);
+                await checkStatusCode(caeCollection, 200, 'admin', 'Should return a status code of 200 when downloading in review objects as a admin in one collection');
+            }
+
+            // should return a status code of 200 when downloading in review objects from another collection
+            async function caeCollection() {
+                setOptions(URI['caeReview'], adminToken);
+                await checkStatusCode(proofing, 200, 'admin', 'Should return a status code of 200 when downloading in review objects as a admin in another collection');
+            }
+        }
+
+        async function proofing() {
+
+            await nccpCollection();
+
+            // should return a status code of 200 when downloading proofing objects from one collection
+            async function nccpCollection() {
+                setOptions(URI['proofing'], adminToken);
+                await checkStatusCode(caeCollection, 200, 'admin', 'Should return a status code of 200 when downloading proofing objects as a admin in one collection');
+            }
+
+            // should return a status code of 200 when downloading proofing objects from another collection
+            async function caeCollection() {
+                setOptions(URI['caeProofing'], adminToken);
+                await checkStatusCode(undefined, 200, 'admin', 'Should return a status code of 200 when downloading proofing objects as a admin in another collection');
             }
         }
     }

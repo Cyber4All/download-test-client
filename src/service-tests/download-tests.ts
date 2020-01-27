@@ -70,7 +70,7 @@ function getDownloadURI({ object, username }): string {
  */
 function setOptions(uri: string, token: string): void {
     options.url = uri;
-    options.headers.Authorization = 'Bearer ' + token;
+    options.headers['Authorization'] = 'Bearer ' + token;
 }
 
 /**

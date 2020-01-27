@@ -30,5 +30,5 @@ export const handler = async (event, context, callback) => {
     }
   });
 
-  return 'exiting';
+  return 'Finished';
 }

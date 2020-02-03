@@ -4,6 +4,7 @@ import { regularUser, reviewerUser, curatorUser, editorUser, adminUser } from '.
 import { MongoDB } from '../drivers/database/mongodb/mongodb';
 import { OutageReport } from '../types/outageReport';
 
+const OK = 200, UNAUTHORIZED = 401, FORBIDDEN = 403;
 let db: MongoDB;
 
 // @ts-ignore
@@ -55,7 +56,7 @@ let afterAll: Function = undefined;
  * @param param0 Contains the learning object to download and its author's username
  */
 function getDownloadURI(params: { object, username }): string {
-    const {object, username} = params;
+    const { object, username } = params;
     if (object) {
         return `${ process.env.BASE_API_URL }/users/${ username }/learning-objects/${ object.cuid }/versions/${ object.version }/bundle`;
     } else {
@@ -148,34 +149,34 @@ export async function testDownloads(callback: Function) {
         
         await unreleased();
 
-        // should return a status code of 401 when downloading unreleased objects
+        // should return a status code of UNAUTHORIZED when downloading unreleased objects
         async function unreleased() {
             setOptions(URI['unreleased'], '');
-            await checkStatusCode(released, 401, '', 'Should return a status code of 401 when downloading unreleased objects as a unauthorized user');
+            await checkStatusCode(released, UNAUTHORIZED, '', 'Should return a status code of UNAUTHORIZED when downloading unreleased objects as a unauthorized user');
         }
 
-        // should return a status code of 401 when downloading released objects
+        // should return a status code of UNAUTHORIZED when downloading released objects
         async function released() {
             setOptions(URI['released'], '');
-            await checkStatusCode(waiting, 401, '', 'Should return a status code of 401 when downloading released objects as a unauthorized user');
+            await checkStatusCode(waiting, UNAUTHORIZED, '', 'Should return a status code of UNAUTHORIZED when downloading released objects as a unauthorized user');
         }
 
-        // should return a status code of 401 when downloading waiting objects
+        // should return a status code of UNAUTHORIZED when downloading waiting objects
         async function waiting() {
             setOptions(URI['waiting'], '');
-            await checkStatusCode(review, 401, '', 'Should return a status code of 401 when downloading waiting objects as a unauthorized user');
+            await checkStatusCode(review, UNAUTHORIZED, '', 'Should return a status code of UNAUTHORIZED when downloading waiting objects as a unauthorized user');
         }
 
-        // should return a status code of 401 when downloading in review objects
+        // should return a status code of UNAUTHORIZED when downloading in review objects
         async function review() {
             setOptions(URI['review'], '');
-            await checkStatusCode(proofing, 401, '', 'Should return a status code of 401 when downloading in review objects as a unauthorized user');
+            await checkStatusCode(proofing, UNAUTHORIZED, '', 'Should return a status code of UNAUTHORIZED when downloading in review objects as a unauthorized user');
         }
 
-        // should return a status code of 401 when downloading proofing objects
+        // should return a status code of UNAUTHORIZED when downloading proofing objects
         async function proofing() {
             setOptions(URI['proofing'], '');
-            await checkStatusCode(regularUserTests, 401, '', 'Should return a status code of 401 when downloading proofing objects as a unauthorized user');
+            await checkStatusCode(regularUserTests, UNAUTHORIZED, '', 'Should return a status code of UNAUTHORIZED when downloading proofing objects as a unauthorized user');
         }
     }
 
@@ -184,34 +185,34 @@ export async function testDownloads(callback: Function) {
         
         await unreleased();
 
-        // should return a status code of 403 when downloading unreleased objects
+        // should return a status code of FORBIDDEN when downloading unreleased objects
         async function unreleased() {
             setOptions(URI['unreleased'], regToken);
-            await checkStatusCode(released, 403, '', 'Should return a status code of 403 when downloading unreleased objects as a regular user');
+            await checkStatusCode(released, FORBIDDEN, '', 'Should return a status code of FORBIDDEN when downloading unreleased objects as a regular user');
         }
 
-        // should return a status code of 200 when downloading released objects
+        // should return a status code of OK when downloading released objects
         async function released() {
             setOptions(URI['released'], regToken);
-            await checkStatusCode(waiting, 200, '', 'Should return a status code of 200 when downloading released objects as a regular user');
+            await checkStatusCode(waiting, OK, '', 'Should return a status code of OK when downloading released objects as a regular user');
         }
 
-        // should return a status code of 403 when downloading waiting objects
+        // should return a status code of FORBIDDEN when downloading waiting objects
         async function waiting() {
             setOptions(URI['waiting'], regToken);
-            await checkStatusCode(review, 403, '', 'Should return a status code of 403 when downloading waiting objects as a regular user');
+            await checkStatusCode(review, FORBIDDEN, '', 'Should return a status code of FORBIDDEN when downloading waiting objects as a regular user');
         }
 
-        // should return a status code of 403 when downloading in review objects
+        // should return a status code of FORBIDDEN when downloading in review objects
         async function review() {
             setOptions(URI['review'], regToken);
-            await checkStatusCode(proofing, 403, '', 'Should return a status code of 403 when downloading in review objects as a regular user');
+            await checkStatusCode(proofing, FORBIDDEN, '', 'Should return a status code of FORBIDDEN when downloading in review objects as a regular user');
         }
 
-        // should return a status code of 403 when downloading proofing objects
+        // should return a status code of FORBIDDEN when downloading proofing objects
         async function proofing() {
             setOptions(URI['proofing'], regToken);
-            await checkStatusCode(reviewerUserTests, 403, '', 'Should return a status code of 403 when downloading proofing objects as a regular user');
+            await checkStatusCode(reviewerUserTests, FORBIDDEN, '', 'Should return a status code of FORBIDDEN when downloading proofing objects as a regular user');
         }
     }
 
@@ -220,32 +221,32 @@ export async function testDownloads(callback: Function) {
         
         await unreleased();
 
-        // should return a status code of 403 when downloading unreleased objects
+        // should return a status code of FORBIDDEN when downloading unreleased objects
         async function unreleased() {
             setOptions(URI['unreleased'], reviewerToken);
-            await checkStatusCode(released, 403, 'reviewer', 'Should return a status code of 403 when downloading unreleased objects as a reviewer');
+            await checkStatusCode(released, FORBIDDEN, 'reviewer', 'Should return a status code of FORBIDDEN when downloading unreleased objects as a reviewer');
         }
 
-        // should return a status code of 200 when downloading released objects
+        // should return a status code of OK when downloading released objects
         async function released() {
             setOptions(URI['released'], reviewerToken);
-            await checkStatusCode(waiting, 200, 'reviewer', 'Should return a status code of 200 when downloading released objects as a reviewer');
+            await checkStatusCode(waiting, OK, 'reviewer', 'Should return a status code of OK when downloading released objects as a reviewer');
         }
 
         async function waiting() {
 
             await nccpCollection();
 
-            // should return a status code of 200 when downloading waiting objects in their collection
+            // should return a status code of OK when downloading waiting objects in their collection
             async function nccpCollection() {
                 setOptions(URI['waiting'], reviewerToken);
-                await checkStatusCode(caeCollection, 200, 'reviewer', 'Should return a status code of 200 when downloading waiting objects as a reviewer in their collection');
+                await checkStatusCode(caeCollection, OK, 'reviewer', 'Should return a status code of OK when downloading waiting objects as a reviewer in their collection');
             }
 
-            // should return a status code of 403 when downloading waiting objects outside their collection
+            // should return a status code of FORBIDDEN when downloading waiting objects outside their collection
             async function caeCollection() {
                 setOptions(URI['caeWaiting'], reviewerToken);
-                await checkStatusCode(review, 403, 'reviewer', 'Should return a status code of 403 when downloading waiting objects as a reviewer outside their collection');
+                await checkStatusCode(review, FORBIDDEN, 'reviewer', 'Should return a status code of FORBIDDEN when downloading waiting objects as a reviewer outside their collection');
             }
         }
 
@@ -253,16 +254,16 @@ export async function testDownloads(callback: Function) {
 
             await nccpCollection();
 
-            // should return a status code of 200 when downloading in review objects in their collection
+            // should return a status code of OK when downloading in review objects in their collection
             async function nccpCollection() {
                 setOptions(URI['review'], reviewerToken);
-                await checkStatusCode(caeCollection, 200, 'reviewer', 'Should return a status code of 200 when downloading in review objects as a reviewer in their collection');
+                await checkStatusCode(caeCollection, OK, 'reviewer', 'Should return a status code of OK when downloading in review objects as a reviewer in their collection');
             }
 
-            // should return a status code of 403 when downloading in review objects outside their collection
+            // should return a status code of FORBIDDEN when downloading in review objects outside their collection
             async function caeCollection() {
                 setOptions(URI['caeReview'], reviewerToken);
-                await checkStatusCode(proofing, 403, 'reviewer', 'Should return a status code of 403 when downloading in review objects as a reviewer outside their collection');
+                await checkStatusCode(proofing, FORBIDDEN, 'reviewer', 'Should return a status code of FORBIDDEN when downloading in review objects as a reviewer outside their collection');
             }
         }
 
@@ -270,16 +271,16 @@ export async function testDownloads(callback: Function) {
 
             await nccpCollection();
 
-            // should return a status code of 200 when downloading proofing objects in their collection
+            // should return a status code of OK when downloading proofing objects in their collection
             async function nccpCollection() {
                 setOptions(URI['proofing'], reviewerToken);
-                await checkStatusCode(caeCollection, 200, 'reviewer', 'Should return a status code of 200 when downloading proofing objects as a reviewer in their collection');
+                await checkStatusCode(caeCollection, OK, 'reviewer', 'Should return a status code of OK when downloading proofing objects as a reviewer in their collection');
             }
 
-            // should return a status code of 403 when downloading proofing objects outside their collection
+            // should return a status code of FORBIDDEN when downloading proofing objects outside their collection
             async function caeCollection() {
                 setOptions(URI['caeProofing'], reviewerToken);
-                await checkStatusCode(curatorUserTests, 403, 'reviewer', 'Should return a status code of 403 when downloading proofing objects as a reviewer outside their collection');
+                await checkStatusCode(curatorUserTests, FORBIDDEN, 'reviewer', 'Should return a status code of FORBIDDEN when downloading proofing objects as a reviewer outside their collection');
             }
         }
     }
@@ -288,32 +289,32 @@ export async function testDownloads(callback: Function) {
     async function curatorUserTests() {
         await unreleased();
 
-        // should return a status code of 403 when downloading unreleased objects
+        // should return a status code of FORBIDDEN when downloading unreleased objects
         async function unreleased() {
             setOptions(URI['unreleased'], curatorToken);
-            await checkStatusCode(released, 403, 'curator', 'Should return a status code of 403 when downloading unreleased objects as a curator');
+            await checkStatusCode(released, FORBIDDEN, 'curator', 'Should return a status code of FORBIDDEN when downloading unreleased objects as a curator');
         }
 
-        // should return a status code of 200 when downloading released objects
+        // should return a status code of OK when downloading released objects
         async function released() {
             setOptions(URI['released'], curatorToken);
-            await checkStatusCode(waiting, 200, 'curator', 'Should return a status code of 200 when downloading released objects as a curator');
+            await checkStatusCode(waiting, OK, 'curator', 'Should return a status code of OK when downloading released objects as a curator');
         }
 
         async function waiting() {
 
             await nccpCollection();
 
-            // should return a status code of 200 when downloading waiting objects in their collection
+            // should return a status code of OK when downloading waiting objects in their collection
             async function nccpCollection() {
                 setOptions(URI['waiting'], curatorToken);
-                await checkStatusCode(caeCollection, 200, 'curator', 'Should return a status code of 200 when downloading waiting objects as a curator in their collection');
+                await checkStatusCode(caeCollection, OK, 'curator', 'Should return a status code of OK when downloading waiting objects as a curator in their collection');
             }
 
-            // should return a status code of 403 when downloading waiting objects outside their collection
+            // should return a status code of FORBIDDEN when downloading waiting objects outside their collection
             async function caeCollection() {
                 setOptions(URI['caeWaiting'], curatorToken);
-                await checkStatusCode(review, 403, 'curator', 'Should return a status code of 403 when downloading waiting objects as a curator outside their collection');
+                await checkStatusCode(review, FORBIDDEN, 'curator', 'Should return a status code of FORBIDDEN when downloading waiting objects as a curator outside their collection');
             }
         }
 
@@ -321,16 +322,16 @@ export async function testDownloads(callback: Function) {
 
             await nccpCollection();
 
-            // should return a status code of 200 when downloading in review objects in their collection
+            // should return a status code of OK when downloading in review objects in their collection
             async function nccpCollection() {
                 setOptions(URI['review'], curatorToken);
-                await checkStatusCode(caeCollection, 200, 'curator', 'Should return a status code of 200 when downloading in review objects as a curator in their collection');
+                await checkStatusCode(caeCollection, OK, 'curator', 'Should return a status code of OK when downloading in review objects as a curator in their collection');
             }
 
-            // should return a status code of 403 when downloading in review objects outside their collection
+            // should return a status code of FORBIDDEN when downloading in review objects outside their collection
             async function caeCollection() {
                 setOptions(URI['caeReview'], curatorToken);
-                await checkStatusCode(proofing, 403, 'curator', 'Should return a status code of 403 when downloading in review objects as a curator outside their collection');
+                await checkStatusCode(proofing, FORBIDDEN, 'curator', 'Should return a status code of FORBIDDEN when downloading in review objects as a curator outside their collection');
             }
         }
 
@@ -338,16 +339,16 @@ export async function testDownloads(callback: Function) {
 
             await nccpCollection();
 
-            // should return a status code of 200 when downloading proofing objects in their collection
+            // should return a status code of OK when downloading proofing objects in their collection
             async function nccpCollection() {
                 setOptions(URI['proofing'], curatorToken);
-                await checkStatusCode(caeCollection, 200, 'curator', 'Should return a status code of 200 when downloading proofing objects as a curator in their collection');
+                await checkStatusCode(caeCollection, OK, 'curator', 'Should return a status code of OK when downloading proofing objects as a curator in their collection');
             }
 
-            // should return a status code of 403 when downloading proofing objects outside their collection
+            // should return a status code of FORBIDDEN when downloading proofing objects outside their collection
             async function caeCollection() {
                 setOptions(URI['caeProofing'], curatorToken);
-                await checkStatusCode(editorUserTests, 403, 'curator', 'Should return a status code of 403 when downloading proofing objects as a curator outside their collection');
+                await checkStatusCode(editorUserTests, FORBIDDEN, 'curator', 'Should return a status code of FORBIDDEN when downloading proofing objects as a curator outside their collection');
             }
         }
     }
@@ -357,32 +358,32 @@ export async function testDownloads(callback: Function) {
 
         await unreleased();
 
-        // should return a status code of 403 when downloading unreleased objects
+        // should return a status code of FORBIDDEN when downloading unreleased objects
         async function unreleased() {
             setOptions(URI['unreleased'], editorToken);
-            await checkStatusCode(released, 403, 'editor', 'Should return a status code of 403 when downloading unreleased objects as a editor');
+            await checkStatusCode(released, FORBIDDEN, 'editor', 'Should return a status code of FORBIDDEN when downloading unreleased objects as a editor');
         }
 
-        // should return a status code of 200 when downloading released objects
+        // should return a status code of OK when downloading released objects
         async function released() {
             setOptions(URI['released'], editorToken);
-            await checkStatusCode(waiting, 200, 'editor', 'Should return a status code of 200 when downloading released objects as a editor');
+            await checkStatusCode(waiting, OK, 'editor', 'Should return a status code of OK when downloading released objects as a editor');
         }
 
         async function waiting() {
 
             await nccpCollection();
 
-            // should return a status code of 200 when downloading waiting objects from one collection
+            // should return a status code of OK when downloading waiting objects from one collection
             async function nccpCollection() {
                 setOptions(URI['waiting'], editorToken);
-                await checkStatusCode(caeCollection, 200, 'editor', 'Should return a status code of 200 when downloading waiting objects as a editor in one collection');
+                await checkStatusCode(caeCollection, OK, 'editor', 'Should return a status code of OK when downloading waiting objects as a editor in one collection');
             }
 
-            // should return a status code of 200 when downloading waiting objects from another collection
+            // should return a status code of OK when downloading waiting objects from another collection
             async function caeCollection() {
                 setOptions(URI['caeWaiting'], editorToken);
-                await checkStatusCode(review, 200, 'editor', 'Should return a status code of 200 when downloading waiting objects as a editor in another collection');
+                await checkStatusCode(review, OK, 'editor', 'Should return a status code of OK when downloading waiting objects as a editor in another collection');
             }
         }
 
@@ -390,16 +391,16 @@ export async function testDownloads(callback: Function) {
 
             await nccpCollection();
 
-            // should return a status code of 200 when downloading in review objects from one collection
+            // should return a status code of OK when downloading in review objects from one collection
             async function nccpCollection() {
                 setOptions(URI['review'], editorToken);
-                await checkStatusCode(caeCollection, 200, 'editor', 'Should return a status code of 200 when downloading in review objects as a editor in one collection');
+                await checkStatusCode(caeCollection, OK, 'editor', 'Should return a status code of OK when downloading in review objects as a editor in one collection');
             }
 
-            // should return a status code of 200 when downloading in review objects from another collection
+            // should return a status code of OK when downloading in review objects from another collection
             async function caeCollection() {
                 setOptions(URI['caeReview'], editorToken);
-                await checkStatusCode(proofing, 200, 'editor', 'Should return a status code of 200 when downloading in review objects as a editor in another collection');
+                await checkStatusCode(proofing, OK, 'editor', 'Should return a status code of OK when downloading in review objects as a editor in another collection');
             }
         }
 
@@ -407,16 +408,16 @@ export async function testDownloads(callback: Function) {
 
             await nccpCollection();
 
-            // should return a status code of 200 when downloading proofing objects from one collection
+            // should return a status code of OK when downloading proofing objects from one collection
             async function nccpCollection() {
                 setOptions(URI['proofing'], editorToken);
-                await checkStatusCode(caeCollection, 200, 'editor', 'Should return a status code of 200 when downloading proofing objects as a editor in one collection');
+                await checkStatusCode(caeCollection, OK, 'editor', 'Should return a status code of OK when downloading proofing objects as a editor in one collection');
             }
 
-            // should return a status code of 200 when downloading proofing objects from another collection
+            // should return a status code of OK when downloading proofing objects from another collection
             async function caeCollection() {
                 setOptions(URI['caeProofing'], editorToken);
-                await checkStatusCode(adminUserTests, 200, 'editor', 'Should return a status code of 200 when downloading proofing objects as a editor in another collection');
+                await checkStatusCode(adminUserTests, OK, 'editor', 'Should return a status code of OK when downloading proofing objects as a editor in another collection');
             }
         }
     }
@@ -426,32 +427,32 @@ export async function testDownloads(callback: Function) {
 
         await unreleased();
 
-        // should return a status code of 403 when downloading unreleased objects
+        // should return a status code of FORBIDDEN when downloading unreleased objects
         async function unreleased() {
             setOptions(URI['unreleased'], adminToken);
-            await checkStatusCode(released, 403, 'admin', 'Should return a status code of 403 when downloading unreleased objects as a admin');
+            await checkStatusCode(released, FORBIDDEN, 'admin', 'Should return a status code of FORBIDDEN when downloading unreleased objects as a admin');
         }
 
-        // should return a status code of 200 when downloading released objects
+        // should return a status code of OK when downloading released objects
         async function released() {
             setOptions(URI['released'], adminToken);
-            await checkStatusCode(waiting, 200, 'admin', 'Should return a status code of 200 when downloading released objects as a admin');
+            await checkStatusCode(waiting, OK, 'admin', 'Should return a status code of OK when downloading released objects as a admin');
         }
 
         async function waiting() {
 
             await nccpCollection();
 
-            // should return a status code of 200 when downloading waiting objects from one collection
+            // should return a status code of OK when downloading waiting objects from one collection
             async function nccpCollection() {
                 setOptions(URI['waiting'], adminToken);
-                await checkStatusCode(caeCollection, 200, 'admin', 'Should return a status code of 200 when downloading waiting objects as a admin in one collection');
+                await checkStatusCode(caeCollection, OK, 'admin', 'Should return a status code of OK when downloading waiting objects as a admin in one collection');
             }
 
-            // should return a status code of 200 when downloading waiting objects from another collection
+            // should return a status code of OK when downloading waiting objects from another collection
             async function caeCollection() {
                 setOptions(URI['caeWaiting'], adminToken);
-                await checkStatusCode(review, 200, 'admin', 'Should return a status code of 200 when downloading waiting objects as a admin in another collection');
+                await checkStatusCode(review, OK, 'admin', 'Should return a status code of OK when downloading waiting objects as a admin in another collection');
             }
         }
 
@@ -459,16 +460,16 @@ export async function testDownloads(callback: Function) {
 
             await nccpCollection();
 
-            // should return a status code of 200 when downloading in review objects from one collection
+            // should return a status code of OK when downloading in review objects from one collection
             async function nccpCollection() {
                 setOptions(URI['review'], adminToken);
-                await checkStatusCode(caeCollection, 200, 'admin', 'Should return a status code of 200 when downloading in review objects as a admin in one collection');
+                await checkStatusCode(caeCollection, OK, 'admin', 'Should return a status code of OK when downloading in review objects as a admin in one collection');
             }
 
-            // should return a status code of 200 when downloading in review objects from another collection
+            // should return a status code of OK when downloading in review objects from another collection
             async function caeCollection() {
                 setOptions(URI['caeReview'], adminToken);
-                await checkStatusCode(proofing, 200, 'admin', 'Should return a status code of 200 when downloading in review objects as a admin in another collection');
+                await checkStatusCode(proofing, OK, 'admin', 'Should return a status code of OK when downloading in review objects as a admin in another collection');
             }
         }
 
@@ -476,16 +477,16 @@ export async function testDownloads(callback: Function) {
 
             await nccpCollection();
 
-            // should return a status code of 200 when downloading proofing objects from one collection
+            // should return a status code of OK when downloading proofing objects from one collection
             async function nccpCollection() {
                 setOptions(URI['proofing'], adminToken);
-                await checkStatusCode(caeCollection, 200, 'admin', 'Should return a status code of 200 when downloading proofing objects as a admin in one collection');
+                await checkStatusCode(caeCollection, OK, 'admin', 'Should return a status code of OK when downloading proofing objects as a admin in one collection');
             }
 
-            // should return a status code of 200 when downloading proofing objects from another collection
+            // should return a status code of OK when downloading proofing objects from another collection
             async function caeCollection() {
                 setOptions(URI['caeProofing'], adminToken);
-                await checkStatusCode(undefined, 200, 'admin', 'Should return a status code of 200 when downloading proofing objects as a admin in another collection');
+                await checkStatusCode(undefined, OK, 'admin', 'Should return a status code of OK when downloading proofing objects as a admin in another collection');
             }
         }
     }

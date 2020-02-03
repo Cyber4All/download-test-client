@@ -1,8 +1,5 @@
 service:
   name: downloads-test-client
-# app and org for use with dashboard.serverless.com
-#app: your-app-name
-#org: your-org-name
 
 custom:
   webpack:
@@ -33,18 +30,4 @@ functions:
   outage-download-test:
     handler: src/handler/downloads/handler.handler
     events:
-      - http:
-          method: put
-          path: outages/downloads
-    package:
-    #   exclude:
-    #     - src/**
-    #     - node_modules/**
-    #     - dist
-    #   include:
-    #     - somefile.txt
-    #     - src/service-tests/download-tests.spec.ts
-    #     - src/drivers/**
-    #     - src/types/**
-    #     - src/users.ts
-    #   artifact: test-deploy/test.zip
+      - schedule: cron(0/10 * ? * ? *)

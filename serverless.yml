@@ -30,4 +30,4 @@ functions:
   outage-download-test:
     handler: src/handler/downloads/handler.handler
     events:
-      - schedule: cron(0/10 * ? * ? *)
+      - schedule: cron(0/15 * ? * ? *)

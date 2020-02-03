@@ -8,6 +8,11 @@ const express = require('express');
 
 startServer();
 
+/**
+ * This file is used to start up a simple express app for the purpose
+ * of developing and testing new handler functions.  If you want to
+ * create a new lambda function, create a new route here to invoke it.
+ */
 function startServer() {
     dotenv.config(); // TODO move this to a higher up file
     const app = express();

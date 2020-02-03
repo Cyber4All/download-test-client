@@ -54,7 +54,8 @@ let afterAll: Function = undefined;
  * Returns a download URI for a given learning object
  * @param param0 Contains the learning object to download and its author's username
  */
-function getDownloadURI({ object, username }): string {
+function getDownloadURI(params: { object, username }): string {
+    const {object, username} = params;
     if (object) {
         return `${ process.env.BASE_API_URL }/users/${ username }/learning-objects/${ object.cuid }/versions/${ object.version }/bundle`;
     } else {

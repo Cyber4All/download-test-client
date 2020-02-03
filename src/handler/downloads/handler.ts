@@ -3,7 +3,7 @@ import { OutageReportUpdates, OutageReport } from '../../types/outageReport';
 import { testDownloads } from '../../service-tests/download-tests';
 
 // @ts-ignore
-export const handler = async (event, context, callback) => {
+export const downloadTestHandler = async (event, context, callback) => {
   const database = await MongoDB.getInstance();
 
   await testDownloads(async (report: OutageReport) => {

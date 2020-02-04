@@ -26,7 +26,12 @@ export const downloadTestHandler = async (event, context, callback) => {
     } else if (report) { // If there is a new report...
         await database.createNewIssue(report);
     } else { // If a old report needs to be resolved...
-        await database.updateActiveIssue({ resolved: new Date() }, 'downloads');
+        await database.updateActiveIssue({
+          accessGroups: activeIssue.accessGroups,
+          issues: activeIssue.issues,
+          links: activeIssue.links,
+          resolved: new Date()
+        }, 'downloads');
     }
   });
 

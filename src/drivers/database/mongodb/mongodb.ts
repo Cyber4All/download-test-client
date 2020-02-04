@@ -43,7 +43,7 @@ export class MongoDB {
      * Gets the current active issue in the system
      * @param name The type of report ('downloads', 'search', 'uploads')
      */
-    async getActiveIssue(name: string) {
+    async getActiveIssue(name: string): Promise<OutageReport> {
         return await this.utilityDb.collection('platform-outage-reports').findOne({ name, resolved: null });
     }
 

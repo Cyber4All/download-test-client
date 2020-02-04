@@ -87,13 +87,13 @@ async function checkStatusCode(callback: Function, code: number, group: string, 
         await new Promise((resolve, reject) => {
             request(options).on('response', async (response) => {
                 if (response.statusCode !== code) {
-                    console.error(`ERROR: Recieved status code ${response.statusCode}, expected ${code}.`);
+                    console.error(`Recieved status code ${response.statusCode}, expected ${code} on URI ${options.url}`);
                     updateReport({ group, test });
                 }
                 await invokeCallback(callback);
                 resolve();
             }).on('error', async (error) => {
-                console.error(`ERROR: Recieved error message: `, error);
+                console.error(`Recieved error message: `, error);
                 updateReport({ group, test });
                 await invokeCallback(callback);
                 reject();

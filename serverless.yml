@@ -28,6 +28,6 @@ vpc:
 
 functions:
   outage-download-test:
-    handler: src/handler/downloads/handler.handler
+    handler: src/handler/downloads/handler.downloadTestHandler
     events:
       - schedule: cron(0/15 * * * ? *)

@@ -10,7 +10,7 @@ export const downloadTestHandler = async (event, context, callback) => {
     // Get active report
     const activeIssue = await database.getActiveIssue('downloads');
     
-    if (activeIssue && report) { // If there are report updates...
+    if (activeIssue && report && report.issues.length > 0) { // If there are report updates...
         if (report.accessGroups !== activeIssue.accessGroups || report.issues !== activeIssue.issues || report.links !== activeIssue.links) {
             const updates: OutageReportUpdates = {
                 accessGroups: report.accessGroups,
@@ -23,13 +23,10 @@ export const downloadTestHandler = async (event, context, callback) => {
     
             await database.updateActiveIssue(updates, 'downloads');
         }
-    } else if (report) { // If there is a new report...
+    } else if (report && report.issues.length > 0) { // If there is a new report...
         await database.createNewIssue(report);
     } else { // If a old report needs to be resolved...
         await database.updateActiveIssue({
-          accessGroups: activeIssue.accessGroups,
-          issues: activeIssue.issues,
-          links: activeIssue.links,
           resolved: new Date()
         }, 'downloads');
     }

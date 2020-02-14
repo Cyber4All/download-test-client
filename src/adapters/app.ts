@@ -30,6 +30,8 @@ function startServer() {
 
     app.get('/downloads', async (_req: Request, res: Response) => {
         const database = await MongoDB.getInstance();
+        // undefined is passed here because the function does not have the lambda event or context.
+        // Callback may be used to show that something is done.
         await downloadTestHandler(undefined, undefined, () => console.log('DONE'));
 
         const issue = await database.getActiveIssue('downloads');

@@ -4,7 +4,7 @@
   "description": "Serverless webpack example using Typescript",
   "main": "handler.js",
   "scripts": {
-    "test": "jest --json --outputFile=test-results.json",
+    "test": "jest",
     "start": "npm run gulp-tsc",
     "build": "node_modules/.bin/gulp tsc",
     "postinstall": "node_modules/.bin/gulp tsc",
@@ -32,12 +32,12 @@
     "@types/node": "^10.12.18",
     "@types/shelljs": "^0.8.6",
     "fork-ts-checker-webpack-plugin": "^3.0.1",
-    "serverless-webpack": "^5.2.0",
+    "serverless-webpack": "^5.3.1",
     "ts-jest": "^24.1.0",
     "ts-loader": "^5.3.3",
     "tslint": "^5.20.1",
     "typescript": "^3.2.4",
-    "webpack": "^4.29.0",
+    "webpack": "^4.41.6",
     "webpack-node-externals": "^1.7.2"
   },
   "author": "The serverless webpack authors (https://github.com/elastic-coders/serverless-webpack)",

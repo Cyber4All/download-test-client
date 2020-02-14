@@ -1,6 +1,9 @@
 import { MongoClient, Db } from 'mongodb';
 import { OutageReport, OutageReportUpdates } from '../../../types/outageReport';
 
+const UTILITY = 'utility';
+const ONION = 'onion';
+
 export class MongoDB {
 
     private static instance: MongoDB;
@@ -35,8 +38,8 @@ export class MongoDB {
      * @param mongodbClient The connection client to MongoDB
      */
     private setDatabase(mongodbClient: MongoClient) {
-        this.utilityDb = mongodbClient.db('utility');
-        this.onionDb = mongodbClient.db('onion');
+        this.utilityDb = mongodbClient.db(UTILITY);
+        this.onionDb = mongodbClient.db(ONION);
     }
 
     /**
@@ -79,7 +82,9 @@ export class MongoDB {
     }
 
     /**
-     * Creates a filter for object aggregation given the object's status and collection
+     * Creates a filter for object aggregation given the object's status and collection.
+     * Collection is optional, in case the object doesn't need to be apart of any
+     * particular collection.
      * @param status The status of the object
      * @param collection The collection of the object
      */

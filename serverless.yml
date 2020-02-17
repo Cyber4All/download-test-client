@@ -1,5 +1,3 @@
-org: eav990
-app: downloads-test-client-app
 service:
   name: downloads-test-client
 

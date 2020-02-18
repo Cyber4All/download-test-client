@@ -1,8 +1,5 @@
 service:
   name: downloads-test-client
-# app and org for use with dashboard.serverless.com
-#app: your-app-name
-#org: your-org-name
 
 custom:
   webpack:
@@ -21,10 +18,16 @@ provider:
   environment:
     AWS_NODEJS_CONNECTION_REUSE_ENABLED: 1
 
+vpc:
+  securityGroupIds:
+    - sg-08b4e0323206d11b7
+    - sg-0c554a0276d163b42
+  subnetIds:
+    - subnet-05c25db5a0333ce8a
+    - subnet-0e2b745404eb5a656
+
 functions:
-  hello:
-    handler: handler.hello
+  outage-download-test:
+    handler: src/handler/downloads/handler.downloadTestHandler
     events:
-      - http:
-          method: get
-          path: hello
+      - schedule: cron(0/15 * * * ? *)

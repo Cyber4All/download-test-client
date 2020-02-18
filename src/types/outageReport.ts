@@ -2,12 +2,14 @@ export interface OutageReport {
     name: string;
     accessGroups: string[];
     issues: string[];
-    discovered: string;
-    resolved?: string;
+    discovered: Date;
+    links?: string[];
+    resolved?: Date;
 }
 
 export interface OutageReportUpdates {
     accessGroups?: string[];
     issues?: string[];
-    resolved?: boolean;
+    links?: string[];
+    resolved?: Date;
 }

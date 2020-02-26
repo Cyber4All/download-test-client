@@ -8,7 +8,8 @@
     "start": "npm run gulp-tsc",
     "build": "node_modules/.bin/gulp tsc",
     "postinstall": "node_modules/.bin/gulp tsc",
-    "gulp-tsc": "node_modules/.bin/gulp start"
+    "gulp-tsc": "node_modules/.bin/gulp start",
+    "deploy": "serverless deploy"
   },
   "dependencies": {
     "body-parser": "^1.19.0",

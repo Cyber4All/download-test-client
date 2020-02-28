@@ -10,6 +10,10 @@ jobs:
           - checkout
           
           - run:
+              name: Install serverless dependencies
+              command: npm install -g serverless
+
+          - run:
               name: Install Node dependencies
               command: npm install
           

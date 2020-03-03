@@ -2,7 +2,14 @@ import { Request, Response } from 'express';
 import { MongoDB } from '../drivers/database/mongodb/mongodb';
 import * as dotenv from 'dotenv';
 import { downloadTestHandler } from '../handler/downloads/handler';
+// @ts-ignore
+// import * as swaggerJsdoc from 'swagger-jsdoc';
+// @ts-ignore
+// import * as swaggerUi from 'swagger-ui-express';
 
+const swaggerJsdoc = require('swagger-jsdoc');
+const swaggerUi = require('swagger-ui-express');
+const version = require('../../package.json').version;
 const bodyParser = require('body-parser');
 const express = require('express');
 
@@ -38,7 +45,48 @@ function startServer() {
         res.status(200).send(issue);
     });
 
+    setUpSwagger(app, port);
+
     app.listen(port, () => {
         console.log(`Server is running on port ${port}`);
     });
+}
+
+function setUpSwagger(app, port) {
+    const options = {
+        swaggerDefinition: {
+          openapi: '3.0.0',
+          info: {
+            title: 'Time to document that Express API you built',
+            version: version,
+            description:
+              'Express api that is used to test system outage lambdas',
+            license: {
+              name: 'MIT',
+              url: 'https://choosealicense.com/licenses/mit/'
+            },
+            contact: {
+              name: 'CLARK',
+              url: 'https://clark.center',
+              email: 'skaza@towson.edu'
+            }
+          },
+          servers: [
+            {
+              url: `http://localhost:${port}`
+            }
+          ]
+        },
+        apis: [
+            './src/types/outageReport.ts'
+        ]
+    };
+    const specs = swaggerJsdoc(options);
+    app.use('/docs', swaggerUi.serve);
+    app.get(
+        '/docs',
+        swaggerUi.setup(specs, {
+            explorer: true
+        })
+    );
 }

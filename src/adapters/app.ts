@@ -35,6 +35,21 @@ function startServer() {
     
     const port = process.env.PORT || 4800;
 
+    /**
+     * @swagger
+     * path:
+     *  /downloads:
+     *      get:
+     *          summary: Runs download tests for the system
+     *          tags: [Downloads]
+     *          responses:
+     *              "200":
+     *                  description: Returns an active downloads issue, if it exists, after running the download tests
+     *                  content:
+     *                      application/json:
+     *                          schema:
+     *                              $ref: '#/components/schemas/OutageReport'
+     */
     app.get('/downloads', async (_req: Request, res: Response) => {
         const database = await MongoDB.getInstance();
         // undefined is passed here because the function does not have the lambda event or context.
@@ -78,7 +93,8 @@ function setUpSwagger(app, port) {
           ]
         },
         apis: [
-            './src/types/outageReport.ts'
+            './src/types/outageReport.ts',
+            './src/adapters/app.ts'
         ]
     };
     const specs = swaggerJsdoc(options);

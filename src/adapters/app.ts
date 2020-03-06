@@ -54,7 +54,8 @@ function startServer() {
         await downloadTestHandler(undefined, undefined, () => console.log('DONE'));
 
         const issue = await database.getActiveIssue('downloads');
-        res.status(200).send(issue);
+        const result = issue ? issue : {};
+        res.status(200).send(result);
     });
 
     setUpSwagger(app, port);

@@ -1,0 +1,84 @@
+{
+	"info": {
+		"_postman_id": "3579e7fc-45d3-4d30-a058-60c24192a66d",
+		"name": "System Status Lambda Express API",
+		"description": "Express api that is used to test system outage lambdas\n\nContact Support:\n Name: CLARK\n Email: skaza@towson.edu",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Runs download tests for the system",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "3ccfcb3f-f3de-4edf-9381-8757aa6af7db",
+						"exec": [
+							"pm.test(\"System Status Downloads Test\", () => {",
+							"    pm.response.to.not.be.error;",
+							"    pm.response.to.have.status(200);",
+							"    pm.response.to.be.withBody;",
+							"    pm.response.to.be.json;",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{baseUrl}}/downloads",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"downloads"
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "Returns an active downloads issue, if it exists, after running the download tests",
+					"originalRequest": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/downloads",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"downloads"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Content-Type",
+							"value": "application/json"
+						}
+					],
+					"cookie": [],
+					"body": "{\n \"name\": \"downloads\",\n \"accessGroups\": [],\n \"issues\": [],\n \"discovered\": \"2019-10-01T21:32:27.759Z\"\n}"
+				}
+			]
+		}
+	],
+	"variable": [
+		{
+			"id": "baseUrl",
+			"key": "baseUrl",
+			"value": "http://localhost:4800",
+			"type": "string"
+		}
+	],
+	"protocolProfileBehavior": {}
+}

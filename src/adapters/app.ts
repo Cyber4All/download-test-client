@@ -2,10 +2,7 @@ import { Request, Response } from 'express';
 import { MongoDB } from '../drivers/database/mongodb/mongodb';
 import * as dotenv from 'dotenv';
 import { downloadTestHandler } from '../handler/downloads/handler';
-// @ts-ignore
-// import * as swaggerJsdoc from 'swagger-jsdoc';
-// @ts-ignore
-// import * as swaggerUi from 'swagger-ui-express';
+import * as fs from 'fs';
 
 const swaggerJsdoc = require('swagger-jsdoc');
 const swaggerUi = require('swagger-ui-express');
@@ -67,42 +64,60 @@ function startServer() {
     });
 }
 
+/**
+ * Sets up swagger documentation and generates a swagger json
+ * file that is used to write tests
+ * @param app The express app
+ * @param port The exposed port number
+ */
 function setUpSwagger(app, port) {
-    const options = {
-        swaggerDefinition: {
-          openapi: '3.0.0',
-          info: {
-            title: 'Time to document that Express API you built',
-            version: version,
-            description:
-              'Express api that is used to test system outage lambdas',
-            license: {
-              name: 'MIT',
-              url: 'https://choosealicense.com/licenses/mit/'
-            },
-            contact: {
-              name: 'CLARK',
-              url: 'https://clark.center',
-              email: 'skaza@towson.edu'
-            }
-          },
-          servers: [
-            {
-              url: `http://localhost:${port}`
-            }
-          ]
+  // Options used to generate swagger docs
+  const options = {
+    swaggerDefinition: {
+      openapi: '3.0.0',
+      info: {
+        title: 'System Status Lambda Express API',
+        version: version,
+        description:
+          'Express api that is used to test system outage lambdas',
+        license: {
+          name: 'ISC',
+          url: 'https://www.isc.org/licenses/'
         },
-        apis: [
-            './src/types/outageReport.ts',
-            './src/adapters/app.ts'
-        ]
-    };
-    const specs = swaggerJsdoc(options);
-    app.use('/docs', swaggerUi.serve);
-    app.get(
-        '/docs',
-        swaggerUi.setup(specs, {
-            explorer: true
-        })
-    );
+        contact: {
+          name: 'CLARK',
+          url: 'https://clark.center',
+          email: 'skaza@towson.edu'
+        }
+      },
+      servers: [
+        {
+          url: `http://localhost:${port}`,
+          description: 'Development'
+        }
+      ]
+    },
+    apis: [
+      './src/types/outageReport.ts',
+      './src/adapters/app.ts'
+    ]
+  };
+
+  const specs = swaggerJsdoc(options);
+
+  // Write specs object out as a swagger.json file
+  fs.writeFile('swagger.json', JSON.stringify(specs), (err) => {
+    if (err) {
+      console.error(err);
+    }
+  });
+
+  // Create route to see swagger docs
+  app.use('/docs', swaggerUi.serve);
+  app.get(
+    '/docs',
+    swaggerUi.setup(specs, {
+        explorer: true
+    })
+  );
 }

@@ -142,7 +142,7 @@ export async function testDownloads(callback: Function) {
     afterAll = callback;
     await beforeAll();
 
-    await unauthorizedUserTests();
+    await regularUserTests();
 
     // and the requester is unauthorized
     async function unauthorizedUserTests() {

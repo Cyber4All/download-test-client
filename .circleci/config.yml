@@ -9,11 +9,16 @@ jobs:
         steps:
             - checkout
             - run:
-                name: Install Node dependencies
+                name: Install node dependencies
                 command: npm install
             - run:
                 name: Unit tests
                 command: npm test
+            - run:
+                name: Install newman and run functional tests
+                command: |
+                    npm i -g newman
+                    npm run ci
     
     deploy-production:
         docker:

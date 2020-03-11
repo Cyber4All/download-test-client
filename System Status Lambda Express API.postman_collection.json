@@ -17,8 +17,6 @@
 							"pm.test(\"System Status Downloads Test\", () => {",
 							"    pm.response.to.not.be.error;",
 							"    pm.response.to.have.status(200);",
-							"    pm.response.to.be.withBody;",
-							"    pm.response.to.be.json;",
 							"});"
 						],
 						"type": "text/javascript"

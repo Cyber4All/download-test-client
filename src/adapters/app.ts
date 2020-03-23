@@ -3,6 +3,7 @@ import { MongoDB } from '../drivers/database/mongodb/mongodb';
 import * as dotenv from 'dotenv';
 import { downloadTestHandler } from '../handler/downloads/handler';
 import * as fs from 'fs';
+import * as http from 'http';
 
 const swaggerJsdoc = require('swagger-jsdoc');
 const swaggerUi = require('swagger-ui-express');
@@ -60,8 +61,10 @@ function startServer() {
 
     setUpSwagger(app, port);
 
-    app.listen(port, () => {
-        console.log(`Server is running on port ${port}`);
+    const server = http.createServer(app);
+    server.keepAliveTimeout = parseInt(process.env.KEEP_ALIVE_TIMEOUT, 10);
+    server.listen(port, () => {
+        console.log(`Server is running on http://localhost:${port}`);
     });
 }
 

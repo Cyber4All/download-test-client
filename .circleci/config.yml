@@ -1,4 +1,4 @@
-version: 2
+version: 2.1
 jobs:
     build:
         docker:
@@ -9,6 +9,7 @@ jobs:
         steps:
             - checkout
             - setup_remote_docker
+            - jq/install
             - run:
                 name: Install node dependencies
                 command: npm install
@@ -22,6 +23,10 @@ jobs:
                 name: Start Mongo
                 command: |
                     docker run -p 27017:27017 -v $(pwd)/database-image/database-image-02-20-20:/data/db -d mongo:4
+            - run:
+                name: Install save KEY as ENV
+                command: |
+                    export KEY=$(aws ssm get-parameters --names "KEY" | jq -r '.Parameters[0].Value')
             - run:
                 name: Install newman and run functional tests
                 command: |
@@ -46,8 +51,11 @@ jobs:
                 name: Deploy to AWS
                 command: npm run deploy
 
+orbs:
+    jq: circleci/jq@1.9.1
+
 workflows:
-    version: 2
+    version: 2.1
     build-test:
         jobs:
             - build:

@@ -4,7 +4,7 @@ import { regularUser, reviewerUser, curatorUser, editorUser, adminUser } from '.
 import { MongoDB } from '../drivers/database/mongodb/mongodb';
 import { OutageReport } from '../types/outageReport';
 
-const OK = 200, UNAUTHORIZED = 401, FORBIDDEN = 403;
+const OK = 200, FORBIDDEN = 403;
 let db: MongoDB;
 
 // @ts-ignore
@@ -142,43 +142,7 @@ export async function testDownloads(callback: Function) {
     afterAll = callback;
     await beforeAll();
 
-    await unauthorizedUserTests();
-
-    // and the requester is unauthorized
-    async function unauthorizedUserTests() {
-        
-        await unreleased();
-
-        // should return a status code of UNAUTHORIZED when downloading unreleased objects
-        async function unreleased() {
-            setOptions(URI['unreleased'], '');
-            await checkStatusCode(released, UNAUTHORIZED, '', 'Should return a status code of UNAUTHORIZED when downloading unreleased objects as a unauthorized user');
-        }
-
-        // should return a status code of UNAUTHORIZED when downloading released objects
-        async function released() {
-            setOptions(URI['released'], '');
-            await checkStatusCode(waiting, UNAUTHORIZED, '', 'Should return a status code of UNAUTHORIZED when downloading released objects as a unauthorized user');
-        }
-
-        // should return a status code of UNAUTHORIZED when downloading waiting objects
-        async function waiting() {
-            setOptions(URI['waiting'], '');
-            await checkStatusCode(review, UNAUTHORIZED, '', 'Should return a status code of UNAUTHORIZED when downloading waiting objects as a unauthorized user');
-        }
-
-        // should return a status code of UNAUTHORIZED when downloading in review objects
-        async function review() {
-            setOptions(URI['review'], '');
-            await checkStatusCode(proofing, UNAUTHORIZED, '', 'Should return a status code of UNAUTHORIZED when downloading in review objects as a unauthorized user');
-        }
-
-        // should return a status code of UNAUTHORIZED when downloading proofing objects
-        async function proofing() {
-            setOptions(URI['proofing'], '');
-            await checkStatusCode(regularUserTests, UNAUTHORIZED, '', 'Should return a status code of UNAUTHORIZED when downloading proofing objects as a unauthorized user');
-        }
-    }
+    await regularUserTests();
 
     // and the requester has no privileges
     async function regularUserTests() {

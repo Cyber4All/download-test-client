@@ -33,6 +33,11 @@ function startServer() {
     
     const port = process.env.PORT || 4800;
 
+    // @ts-ignore
+    app.get('/', async (req: Request, res: Response) => {
+      res.status(200).send('Welcome to the CLARK System Status Lambda Test Server');
+    });
+
     /**
      * @swagger
      * path:

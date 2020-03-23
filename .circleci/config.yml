@@ -28,8 +28,8 @@ jobs:
                 command: |
                     export KEY=$(aws ssm get-parameters --names "KEY" | jq -r '.Parameters[0].Value')
             - run:
-                name: Wait 10 seconds for Mongo to be available
-                command: sleep 10
+                name: Wait 60 seconds for Mongo to be available
+                command: sleep 60
             - run:
                 name: Install newman and run functional tests
                 command: |

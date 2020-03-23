@@ -8,12 +8,20 @@ jobs:
         
         steps:
             - checkout
+            - setup_remote_docker
             - run:
                 name: Install node dependencies
                 command: npm install
             - run:
                 name: Unit tests
                 command: npm test
+            - run:
+                name: Clone database image
+                command: git clone https://$BITBUCKET_USERNAME:$BITBUCKET_PASSWORD@bitbucket.org/cyber4all-clark/database-image.git
+            - run:
+                name: Start Mongo
+                command: |
+                    docker run -p 27017:27017 -v ./database-image/database-image-02-20-20:/data/db -d mongo:4
             - run:
                 name: Install newman and run functional tests
                 command: |

@@ -21,7 +21,7 @@ jobs:
             - run:
                 name: Start Mongo
                 command: |
-                    docker run -p 27017:27017 -v ./database-image/database-image-02-20-20:/data/db -d mongo:4
+                    docker run -p 27017:27017 -v $(pwd)/database-image/database-image-02-20-20:/data/db -d mongo:4
             - run:
                 name: Install newman and run functional tests
                 command: |

@@ -17,7 +17,7 @@ jobs:
             - run:
                 name: Install newman and run functional tests
                 command: |
-                    npm i -g newman
+                    sudo npm i -g newman
                     npm run ci
     
     deploy-production:
@@ -30,7 +30,7 @@ jobs:
             - checkout
             - run:
                 name: Install serverless dependencies
-                command: npm install -g serverless
+                command: sudo npm install -g serverless
             - run:
                 name: Install node dependencies
                 command: npm install

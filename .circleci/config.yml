@@ -23,8 +23,11 @@ jobs:
                 name: Start Mongo
                 command: |
                     docker run -p 27017:27017 -v $(pwd)/database-image/database-image-02-20-20:/data/db -d circleci/mongo:4
+                    sleep 30
                     docker container ls
+                    curl http://127.0.0.0:27017
                     curl http://localhost:27017
+                    curl http://0.0.0.0:27017
             # - run:
             #     name: Install save KEY as ENV
             #     command: |

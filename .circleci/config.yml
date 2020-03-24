@@ -22,19 +22,21 @@ jobs:
             - run:
                 name: Start Mongo
                 command: |
-                    docker run -p 27017:27017 -v $(pwd)/database-image/database-image-02-20-20:/data/db -d mongo:4
-            - run:
-                name: Install save KEY as ENV
-                command: |
-                    export KEY=$(aws ssm get-parameters --names "KEY" | jq -r '.Parameters[0].Value')
-            - run:
-                name: Wait 60 seconds for Mongo to be available
-                command: sleep 60
-            - run:
-                name: Install newman and run functional tests
-                command: |
-                    sudo npm i -g newman
-                    npm run ci
+                    docker run -p 27017:27017 -v $(pwd)/database-image/database-image-02-20-20:/data/db -d circleci/mongo:4
+                    docker container ls
+                    curl http://localhost:27017
+            # - run:
+            #     name: Install save KEY as ENV
+            #     command: |
+            #         export KEY=$(aws ssm get-parameters --names "KEY" | jq -r '.Parameters[0].Value')
+            # - run:
+            #     name: Wait 20 seconds for Mongo to be available
+            #     command: sleep 20
+            # - run:
+            #     name: Install newman and run functional tests
+            #     command: |
+            #         sudo npm i -g newman
+            #         npm run ci
     
     deploy-production:
         docker:

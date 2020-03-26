@@ -1,0 +1,6 @@
+.gitignore
+.env
+.serverless
+dist
+node_modules
+swagger.json

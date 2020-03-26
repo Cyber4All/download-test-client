@@ -4,6 +4,7 @@
   "description": "Serverless webpack example using Typescript",
   "main": "handler.js",
   "scripts": {
+    "start": "npm run serve",
     "test": "node_modules/.bin/jest",
     "newman-test": "newman run System\\ Status\\ Lambda\\ Express\\ API.postman_collection.json",
     "start-server": "nodemon",

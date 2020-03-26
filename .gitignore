@@ -5,3 +5,4 @@ dist
 test-results.json
 .serverless
 swagger.json
+database-image

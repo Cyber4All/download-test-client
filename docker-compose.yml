@@ -1,0 +1,25 @@
+version: "3.7"
+
+services:
+    mongodb:
+        image: mongo:4
+        ports:
+            - "27017:27017"
+        volumes:
+            - ./database-image/database-image-03-11-20:/data/db
+        networks:
+            - cicd-network
+
+    express-app:
+        build:
+            context: .
+            dockerfile: Dockerfile
+        depends_on:
+            - "mongodb"
+        networks:
+            - cicd-network
+        # command: ["./functional-tests.sh"]
+
+networks:
+    cicd-network:
+        driver: bridge

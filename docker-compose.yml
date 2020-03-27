@@ -16,6 +16,11 @@ services:
             dockerfile: Dockerfile
         depends_on:
             - "mongodb"
+        environment:
+            - KEY=${KEY}
+            - ISSUER=${ISSUER}
+            - CLARK_DB_URI=${CLARK_DB_URI}
+            - BASE_API_URL=${BASE_API_URL}
         networks:
             - cicd-network
         # command: ["./functional-tests.sh"]

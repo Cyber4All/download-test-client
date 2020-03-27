@@ -9,7 +9,6 @@ jobs:
         steps:
             - checkout
             - setup_remote_docker
-            - jq/install
             - run:
                 name: Install node dependencies
                 command: npm install
@@ -20,15 +19,24 @@ jobs:
                 name: Clone database image
                 command: git clone https://$BITBUCKET_USERNAME:$BITBUCKET_PASSWORD@bitbucket.org/cyber4all-clark/database-image.git
             - run:
-                name: Start Mongo
+                name: Install Docker Compose
                 command: |
-                    docker run -p 27017:27017 -v $(pwd)/database-image/database-image-02-20-20:/data/db -d circleci/mongo:4
-                    sleep 30
-                    docker container ls
-                    netstat -ln | grep 27017
-                    curl http://0.0.0.0:27017
-                    curl http://127.0.0.0:27017
-                    curl http://localhost:27017
+                    set -x
+                    curl -L https://github.com/docker/compose/releases/download/1.25.3/docker-compose-`uname -s`-`uname -m` > /usr/local/bin/docker-compose
+                    chmod +x /usr/local/bin/docker-compose
+            - run:
+                name: Run functional tests
+                command: docker-compose up -d
+            # - run:
+            #     name: Start Mongo
+            #     command: |
+            #         docker run -p 27017:27017 -v $(pwd)/database-image/database-image-02-20-20:/data/db -d circleci/mongo:4
+            #         sleep 30
+            #         docker container ls
+            #         netstat -ln | grep 27017
+            #         curl http://0.0.0.0:27017
+            #         curl http://127.0.0.0:27017
+            #         curl http://localhost:27017
             # - run:
             #     name: Install save KEY as ENV
             #     command: |
@@ -59,9 +67,6 @@ jobs:
             - run:
                 name: Deploy to AWS
                 command: npm run deploy
-
-orbs:
-    jq: circleci/jq@1.9.1
 
 workflows:
     version: 2.1

@@ -25,7 +25,9 @@ jobs:
             - run:
                 name: Get KEY from ssm and save as ENV
                 # command: export KEY=$(aws ssm get-parameters --names "KEY" | jq -r '.Parameters[0].Value')
-                command: export KEY=foo
+                command: |
+                    export KEY=foo
+                    echo $KEY
             - run:
                 name: Run functional tests
                 command: docker-compose up --exit-code-from express-app

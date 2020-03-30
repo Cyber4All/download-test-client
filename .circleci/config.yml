@@ -12,8 +12,7 @@ jobs:
             - checkout
             - setup_remote_docker
             - jq/install
-            - aws-cli/setup:
-                profile-name: serverless
+            - aws-cli/setup
             - run:
                 name: Install node dependencies
                 command: npm install

@@ -19,6 +19,9 @@ jobs:
                 name: Clone database image
                 command: git clone https://$BITBUCKET_USERNAME:$BITBUCKET_PASSWORD@bitbucket.org/cyber4all-clark/database-image.git
             - run:
+                name: Get KEY from ssm and save as ENV
+                command: export KEY=$(aws ssm get-parameters --names "KEY" | jq -r '.Parameters[0].Value')
+            - run:
                 name: Run functional tests
                 command: docker-compose up
             # - run:
@@ -31,10 +34,6 @@ jobs:
             #         curl http://0.0.0.0:27017
             #         curl http://127.0.0.0:27017
             #         curl http://localhost:27017
-            # - run:
-            #     name: Install save KEY as ENV
-            #     command: |
-            #         export KEY=$(aws ssm get-parameters --names "KEY" | jq -r '.Parameters[0].Value')
             # - run:
             #     name: Wait 20 seconds for Mongo to be available
             #     command: sleep 20

@@ -27,25 +27,7 @@ jobs:
                 command: KEY=$(aws ssm get-parameters --names "KEY" | jq -r '.Parameters[0].Value')
             - run:
                 name: Run functional tests
-                command: docker-compose up
-            # - run:
-            #     name: Start Mongo
-            #     command: |
-            #         docker run -p 27017:27017 -v $(pwd)/database-image/database-image-02-20-20:/data/db -d circleci/mongo:4
-            #         sleep 30
-            #         docker container ls
-            #         netstat -ln | grep 27017
-            #         curl http://0.0.0.0:27017
-            #         curl http://127.0.0.0:27017
-            #         curl http://localhost:27017
-            # - run:
-            #     name: Wait 20 seconds for Mongo to be available
-            #     command: sleep 20
-            # - run:
-            #     name: Install newman and run functional tests
-            #     command: |
-            #         sudo npm i -g newman
-            #         npm run ci
+                command: docker-compose up --exit-code-from express-app
     
     deploy-production:
         docker:

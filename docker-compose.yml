@@ -24,7 +24,7 @@ services:
         networks:
             - cicd-network
         command:
-            - functional-tests.sh
+            - ./functional-tests.sh 
 
 networks:
     cicd-network:

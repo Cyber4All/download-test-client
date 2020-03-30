@@ -1,4 +1,4 @@
-PATH="/usr/local/bin:$PATH"
-npm --version
+set -e
+sleep 5
 npm install -g newman
-npm run newman-test
+npm run ci

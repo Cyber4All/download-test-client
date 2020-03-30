@@ -5,10 +5,15 @@ jobs:
             - image: circleci/node:10
         
         working_directory: ~/repo
+
+        executor: aws-cli/default
         
         steps:
             - checkout
             - setup_remote_docker
+            - jq/install
+            - aws-cli/setup:
+                profile-name: serverless
             - run:
                 name: Install node dependencies
                 command: npm install
@@ -60,6 +65,10 @@ jobs:
             - run:
                 name: Deploy to AWS
                 command: npm run deploy
+
+orbs:
+    aws-cli: circleci/aws-cli@1.0.0
+    jq: circleci/jq@2.0.0
 
 workflows:
     version: 2.1

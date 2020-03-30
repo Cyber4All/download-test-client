@@ -24,7 +24,8 @@ jobs:
                 command: git clone https://$BITBUCKET_USERNAME:$BITBUCKET_PASSWORD@bitbucket.org/cyber4all-clark/database-image.git
             - run:
                 name: Get KEY from ssm and save as ENV
-                command: KEY=$(aws ssm get-parameters --names "KEY" | jq -r '.Parameters[0].Value')
+                # command: export KEY=$(aws ssm get-parameters --names "KEY" | jq -r '.Parameters[0].Value')
+                command: export KEY=foo
             - run:
                 name: Run functional tests
                 command: docker-compose up --exit-code-from express-app

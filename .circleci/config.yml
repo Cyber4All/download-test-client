@@ -30,7 +30,9 @@ jobs:
                     echo $KEY
             - run:
                 name: Run functional tests
-                command: docker-compose up -e KEY=foo --exit-code-from express-app
+                command: |
+                    echo $KEY
+                    docker-compose up --exit-code-from express-app
     
     deploy-production:
         docker:

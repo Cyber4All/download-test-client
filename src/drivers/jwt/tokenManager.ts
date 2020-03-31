@@ -23,6 +23,5 @@ export function generateUserToken(user: Requester) {
       expiresIn: 86400,
       audience: 'https://clark.center',
     };
-    console.log(process.env.KEY.length);
     return jwt.sign(payload, process.env.KEY, options);
 }

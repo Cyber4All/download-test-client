@@ -1,0 +1,73 @@
+version: 2.1
+jobs:
+    build:
+        docker:
+            - image: circleci/node:10
+        
+        working_directory: ~/repo
+
+        executor: aws-cli/default
+        
+        steps:
+            - checkout
+            - setup_remote_docker
+            - jq/install
+            - aws-cli/setup
+            - run:
+                name: Install node dependencies
+                command: npm install
+            - run:
+                name: Unit tests
+                command: npm test
+            - run:
+                name: Clone database image
+                command: git clone https://$BITBUCKET_USERNAME:$BITBUCKET_PASSWORD@bitbucket.org/cyber4all-clark/database-image.git
+            - run:
+                name: Get KEY ENV and run functional tests
+                command: |
+                    export KEY=$(aws ssm get-parameters --names "KEY" | jq -r '.Parameters[0].Value')
+                    docker-compose up --exit-code-from express-app
+    
+    deploy-production:
+        docker:
+            - image: circleci/node:10
+        
+        working_directory: ~/repo
+
+        steps:
+            - checkout
+            - run:
+                name: Install serverless dependencies
+                command: sudo npm install -g serverless
+            - run:
+                name: Install node dependencies
+                command: npm install
+            - run:
+                name: Deploy to AWS
+                command: npm run deploy
+
+orbs:
+    aws-cli: circleci/aws-cli@1.0.0
+    jq: circleci/jq@2.0.0
+
+workflows:
+    version: 2.1
+    build-test:
+        jobs:
+            - build:
+                filters:
+                    branches:
+                        ignore: /master/
+    
+    build-test-and-deploy-production:
+        jobs:
+            - build:
+                filters:
+                    branches:
+                        only: /master/
+            - deploy-production:
+                requires:
+                    - build
+                filters:
+                    branches:
+                        only: /master/

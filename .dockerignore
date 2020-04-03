@@ -1,8 +1,7 @@
-node_modules
-vscode
+.gitignore
 .env
-dist
-test-results.json
 .serverless
+dist
+node_modules
 swagger.json
 database-image

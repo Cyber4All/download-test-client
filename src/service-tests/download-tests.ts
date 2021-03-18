@@ -91,7 +91,7 @@ async function checkStatusCode(callback: Function, code: number, group: string, 
                     updateReport({ group, test });
                 }
                 await invokeCallback(callback);
-                resolve();
+                resolve(null);
             }).on('error', async (error) => {
                 console.error(`Recieved error message: `, error);
                 updateReport({ group, test });

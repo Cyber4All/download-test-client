@@ -20,8 +20,7 @@
     "express": "^4.16.4",
     "jsonwebtoken": "^8.5.1",
     "mongodb": "^3.6.4",
-    "request": "^2.88.0",
-    "request-promise": "^4.2.5",
+    "node-fetch": "^2.6.1",
     "source-map-support": "^0.5.10",
     "swagger-jsdoc": "^3.5.0",
     "swagger-ui-express": "^4.1.3"

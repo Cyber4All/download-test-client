@@ -83,7 +83,6 @@ function setOptions(uri: string, token: string): void {
  * @returns The json of the request or throws and error
  */
  function checkStatus(res: any): Promise<any> {
-    // res.status >= 200 && res.status < 300
     if (res.status && res.status >= 200 && res.status < 600) {
         return res;
     } else {

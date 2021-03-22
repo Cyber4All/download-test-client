@@ -1,8 +1,8 @@
-const request = require('request');
 import { generateUserToken } from '../drivers/jwt/tokenManager';
 import { regularUser, reviewerUser, curatorUser, editorUser, adminUser } from '../users';
 import { MongoDB } from '../drivers/database/mongodb/mongodb';
 import { OutageReport } from '../types/outageReport';
+import * as fetch from 'node-fetch';
 
 const OK = 200, FORBIDDEN = 403;
 let db: MongoDB;
@@ -76,6 +76,21 @@ function setOptions(uri: string, token: string): void {
 }
 
 /**
+ * This checks the status of the response from the node-fetch
+ * statement to see if it threw an error message
+ * 
+ * @param res The node-fetch response object
+ * @returns The json of the request or throws and error
+ */
+ function checkStatus(res: any): Promise<any> {
+    if (res.status && res.status >= 200 && res.status < 600) {
+        return res;
+    } else {
+        throw res;
+    }
+  }
+
+/**
  * Dynamically goes through each callback to see if downloads work for each specified case
  * @param functions The next function to call
  * @param code The code to expect
@@ -85,14 +100,16 @@ function setOptions(uri: string, token: string): void {
 async function checkStatusCode(callback: Function, code: number, group: string, test: string) {
     if (options.url) {
         await new Promise((resolve, reject) => {
-            request(options).on('response', async (response) => {
-                if (response.statusCode !== code) {
-                    console.error(`Recieved status code ${response.statusCode}, expected ${code} on URI ${options.url}`);
+            fetch(options.url, options)
+            .then(checkStatus)
+            .then(async (res: any) => {
+                if (res.status !== code) {
+                    console.error(`Recieved status code ${res.status}, expected ${code} on URI ${options.url}`);
                     updateReport({ group, test });
                 }
                 await invokeCallback(callback);
-                resolve();
-            }).on('error', async (error) => {
+                resolve(null);
+            }).catch(async (error: Error) => {
                 console.error(`Recieved error message: `, error);
                 updateReport({ group, test });
                 await invokeCallback(callback);
